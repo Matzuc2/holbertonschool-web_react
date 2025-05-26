@@ -25,5 +25,7 @@ const body = document.body,
       tbl = document.createElement('table');
 
       for(let i in studentList) {
-        console.log(i)
+        const tr = tbl.insertRow()
+        const td = tr.insertCell();
+        td.appendChild(document.createTextNode(`Cell I${i}/J${j}`));
       }
