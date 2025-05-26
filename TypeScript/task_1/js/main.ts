@@ -1,50 +1,96 @@
-// je créer mon interface
-interface Student{
-    firstName: String;
-    lastName: String;
-    age: Number;
-    location: String;
-}
-// puis mes deux objets
-const student1: Student = {
-    firstName: "Josh",
-    lastName: "Dawn",
-    age: 19,
-    location: "New-York"
+interface Teacher {
+    readonly firstName: string;
+    readonly lastName: string;
+    location: string;
+    [key: string]: any;
 }
 
-const student2: Student = {
-    firstName: "Joush",
-    lastName: "Down",
-    age: 19,
-    location: "New-York"
+const teacher3: Teacher = {
+  firstName: 'John',
+  fullTimeEmployee: false,
+  lastName: 'Doe',
+  location: 'London',
+  contract: false,
+};
+
+console.log(teacher3);
+
+// should print
+// Object
+// contract: false
+// firstName: "John"
+// fullTimeEmployee: false
+// lastName: "Doe"
+// location: "London"
+interface Directors {
+    readonly firstName: string;
+    readonly lastName: string;
+    location: string;
+    numberOfReports: number;
+    [key: string]: any;
 }
 
-// je créer ma liste avec les deux objets précédents
-let studentList = [student1, student2];
+const director1: Directors = {
+  firstName: 'John',
+  lastName: 'Doe',
+  location: 'London',
+  fullTimeEmployee: true,
+  numberOfReports: 17,
+};
 
-// puis je créer mon HTML
-const body = document.body;
-const tbl = document.createElement('table');
+console.log(director1);
 
-// d'abord le header de ma table
-const header = tbl.insertRow()
-const th1 = document.createElement("th");
-th1.textContent = 'First Name'
-const th2 = document.createElement("th")
-th2.textContent = 'Last Name'
-header.append(th1)
-header.append(th2)
 
-// ensuite ce que contient les deux premiers champs
-//je boucle autant que le nombre d'objets dans ma list
-for (let i in studentList) {
-    const tr = tbl.insertRow();
-    const td1 = tr.insertCell();
-    td1.textContent = studentList[i].firstName.toString();
-    const td2 = tr.insertCell();
-    td2.textContent = studentList[i].location.toString();
+interface printTeacherFunction {
+  (firstName: string , lastName: string): string;
 }
 
-//j'ajoute ma table dans ma list
-body.appendChild(tbl);
+const printTeacher: printTeacherFunction = (firstName, lastName) => {
+  const chara = firstName[0];
+  return (`${chara}. ${lastName}`) 
+}
+
+console.log(printTeacher(teacher3.firstName, teacher3.lastName));
+
+interface StudentClassI{
+  firstName: string,
+  lastName: string,
+  workOnHomework(): string,
+  displayName(): string
+}
+class StudentClass implements StudentClassI{
+  firstName: string;
+  lastName: string;
+
+  constructor(firstName: string, lastName: string) 
+  {
+    this.lastName = lastName
+    this.firstName = firstName 
+  }
+
+  workOnHomework(): string {
+    return ("Currently working")
+  }
+
+  displayName(): string {
+   return this.firstName
+  }
+}
+// Interface for the class methods and properties
+interface StudentClassInterface {
+  firstName: string;
+  lastName: string;
+  workOnHomework(): string;
+  displayName(): string;
+}
+
+// Interface for the constructor arguments
+interface StudentConstructorArgs {
+  firstName: string;
+  lastName: string;
+}
+
+
+const student = new StudentClass('John', 'Doe');
+console.log(student.displayName());
+console.log(student.workOnHomework());
