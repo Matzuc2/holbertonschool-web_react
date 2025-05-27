@@ -17,7 +17,7 @@ console.log(teacher3);
 
 // should print
 // Object
-// contract: false
+// contract: false+
 // firstName: "John"
 // fullTimeEmployee: false
 // lastName: "Doe"
