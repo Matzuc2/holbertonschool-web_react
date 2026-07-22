@@ -3,9 +3,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   entry: {
-    header: './header/header.js',
-    body: './body/body.js',
-    footer: './footer/footer.js',
+    header: './modules/header/header.js',
+    body: './modules/body/body.js',
+    footer: './modules/footer/footer.js',
   },
   output: {
     filename: '[name].bundle.js',
