@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "jquery": "^1.7.4",
+    "webpack": "^5.108.4",
+    "webpack-cli": "^7.2.1"
+  }
+}
