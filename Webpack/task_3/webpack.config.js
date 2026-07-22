@@ -1,5 +1,6 @@
 const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
@@ -7,12 +8,15 @@ module.exports = {
     body: './modules/body/body.js',
     footer: './modules/footer/footer.js',
   },
+  devtool: 'inline-source-map',
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'public'),
   },
-    devServer: {
-      port: 8564
+  devServer: {
+    static: './public',
+    port: 8564,
+    open: true,
   },
   mode: 'development',
   module: {
@@ -23,10 +27,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
-        use: [
-          'file-loader',
-          'image-webpack-loader',
-        ],
+        use: ['file-loader', 'image-webpack-loader'],
       },
     ],
   },
@@ -35,5 +36,9 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      chunks: ['header', 'body', 'footer'],
+      filename: 'index.html',
+    }),
   ],
 };
