@@ -37,7 +37,7 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      chunks: ['header', 'body', 'footer'],
+      chunks: 'all',
       filename: 'index.html',
     }),
   ],
