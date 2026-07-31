@@ -17,7 +17,7 @@ function App() {
       </div>
       <div className='App-footer'>
         <header>
-          <p>Copyright 2026 - holberton School</p>
+          <p>Copyright 2026 - Holberton School</p>
         </header>
       </div>
     </>
