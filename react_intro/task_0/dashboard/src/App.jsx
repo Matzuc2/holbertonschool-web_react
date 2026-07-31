@@ -7,8 +7,10 @@ function App() {
   return (
     <>
       <div className='App-header'>
+        <header>
           <img src={holbertonLogo} alt='holberton logo' />
           <h1 style={{ color: '#e1003c' }}>School dashboard</h1>
+        </header>
       </div>
       <div className='App-body'>
         <body>
@@ -16,9 +18,9 @@ function App() {
         </body>
       </div>
       <div className='App-footer'>
-        <header>
+        <footer>
           <p>Copyright 2026 - Holberton School</p>
-        </header>
+        </footer>
       </div>
     </>
   )
