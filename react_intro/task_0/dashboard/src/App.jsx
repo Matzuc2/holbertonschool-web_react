@@ -7,10 +7,8 @@ function App() {
   return (
     <>
       <div className='App-header'>
-        <header>
           <img src={holbertonLogo} alt='Holberton logo' />
           <h1 style={{ color: '#e1003c' }}>School dashboard</h1>
-        </header>
       </div>
       <div className='App-body'>
         <body>
@@ -19,7 +17,7 @@ function App() {
       </div>
       <div className='App-footer'>
         <header>
-          <p>Copyright {new Date().getFullYear()} - Holberton School</p>
+          <p>Copyright 2026 - holberton School</p>
         </header>
       </div>
     </>
