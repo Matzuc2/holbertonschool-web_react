@@ -20,3 +20,24 @@ test('renders School Dashboard img', () =>{
     const image = screen.getByAltText(/Holberton logo/i)
     expect(image).toBeInTheDocument()
 })
+
+
+test('renders School Dashboard inputs', () =>{
+    render(<App/>)
+    const email = screen.getByRole('input', {name: 'password'})
+    const pwd = screen.getByRole('input', {name: 'email'})
+
+    expect(email).toBeInTheDocument()
+    expect(pwd).toBeInTheDocument()
+})
+
+test('renders School Dashboard labels', () => {
+  render(<App />)
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
+  expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+})
+
+test('renders School Dashboard button', () => {
+  render(<App />)
+  expect(screen.getByRole('button', { name: /OK/i })).toBeInTheDocument()
+})
