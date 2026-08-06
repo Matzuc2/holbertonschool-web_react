@@ -22,13 +22,10 @@ test('renders School Dashboard img', () =>{
 })
 
 
-test('renders School Dashboard inputs', () =>{
-    render(<App/>)
-    const email = screen.getByRole('input', {name: 'password'})
-    const pwd = screen.getByRole('input', {name: 'email'})
-
-    expect(email).toBeInTheDocument()
-    expect(pwd).toBeInTheDocument()
+test('renders School Dashboard inputs', () => {
+  render(<App />)
+  const inputs = screen.getAllByRole('textbox')
+  expect(inputs).toHaveLength(2)
 })
 
 test('renders School Dashboard labels', () => {
