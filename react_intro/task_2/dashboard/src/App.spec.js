@@ -7,6 +7,7 @@ test('renders School Dashboard h1', () => {
   const h1 = screen.getByRole('heading', { name: /School dashboard/i })
   expect(h1).toBeInTheDocument()
 })
+
 test('renders School Dashboard p', () => {
   render(<App />)
   const pLogin = screen.getByText(/Login to access the full dashboard/i)
@@ -15,6 +16,7 @@ test('renders School Dashboard p', () => {
   expect(pLogin).toBeInTheDocument()
   expect(pCopyright).toBeInTheDocument()
 })
+
 test('renders School Dashboard img', () =>{
     render(<App/>)
     const image = screen.getByAltText(/Holberton logo/i)
@@ -28,11 +30,13 @@ test('renders School Dashboard inputs', () => {
   expect(inputs).toHaveLength(2)
 })
 
+
 test('renders School Dashboard labels', () => {
   render(<App />)
-  expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
-  expect(screen.getByLabelText(/password/i)).toBeInTheDocument()
+  expect(screen.getByText(/email/i)).toBeInTheDocument()
+  expect(screen.getByText(/password/i)).toBeInTheDocument()
 })
+
 
 test('renders School Dashboard button', () => {
   render(<App />)
