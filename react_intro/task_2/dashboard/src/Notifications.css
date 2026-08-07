@@ -5,3 +5,20 @@
   text-align: start;
   color: black;
 }
+
+.notification-items button {
+  float: right;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.notification-items ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.notification-items ul li {
+  color: #e1003c;
+}
