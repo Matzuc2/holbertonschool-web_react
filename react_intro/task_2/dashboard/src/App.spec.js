@@ -8,6 +8,7 @@ test('renders School Dashboard h1', () => {
   expect(h1).toBeInTheDocument()
 })
 
+
 test('renders School Dashboard p', () => {
   render(<App />)
   const pLogin = screen.getByText(/Login to access the full dashboard/i)
@@ -26,8 +27,11 @@ test('renders School Dashboard img', () =>{
 
 test('renders School Dashboard inputs', () => {
   render(<App />)
-  const inputs = screen.getAllByRole('textbox')
-  expect(inputs).toHaveLength(2)
+
+  const emailInput = screen.getByLabelText(/email/i)
+  const passwordInput = screen.getByLabelText(/password/i)
+  expect(emailInput).toBeInTheDocument()
+  expect(passwordInput).toBeInTheDocument()
 })
 
 
