@@ -1,7 +1,6 @@
 import {render, screen} from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import Login from './Login'
-
+import userEvent from '@testing-library/user-event'
 
 test('renders School Dashboard p', () => {
   render(<Login />)
@@ -15,18 +14,17 @@ test('renders School Dashboard p', () => {
   expect(pLogin).toBeInTheDocument()
 })
 
-test('inputs get focus for clicks on label', async () => {
+test('inputs get focus when clicks on labels', async () => {
   render(<Login />)
 
   const emailInput = screen.getByLabelText(/email/i)
   const passwordInput = screen.getByLabelText(/password/i)
   const emailLabel = document.querySelector(`label[for="${emailInput.id}"]`)
   const passwordLabel = document.querySelector(`label[for="${passwordInput.id}"]`)
-  const user = userEvent.setup()
 
-  await user.click(emailLabel)
+  await userEvent.click(emailLabel)
   expect(emailInput).toHaveFocus()
 
-  await user.click(passwordLabel)
+  await userEvent.click(passwordLabel)
   expect(passwordInput).toHaveFocus()
 })
