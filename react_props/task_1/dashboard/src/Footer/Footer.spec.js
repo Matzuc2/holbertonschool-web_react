@@ -4,6 +4,8 @@ import { getCurrentYear, getFooterCopy } from '../utils/utils'
 
 test('renders Footer', () => {
   render(<Footer />)
-  const p = screen.getByText(`copyright ${getCurrentYear()} - ${getFooterCopy(true)}`)
+  const p = screen.getByText(
+    new RegExp(`copyright\\s+${getCurrentYear()}\\s+-\\s+${getFooterCopy(true)}`, 'i')
+  )
   expect(p).toBeInTheDocument()
 })

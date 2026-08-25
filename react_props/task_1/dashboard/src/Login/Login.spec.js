@@ -15,13 +15,13 @@ test('renders School Dashboard p', () => {
   expect(pLogin).toBeInTheDocument()
 })
 
-test('inputs get focus when their labels are clicked', async () => {
+test('inputs get focus for clicks on label', async () => {
   render(<Login />)
 
   const emailInput = screen.getByLabelText(/email/i)
   const passwordInput = screen.getByLabelText(/password/i)
-  const emailLabel = document.querySelector(`label[for="${emailInput.id}"]`)
-  const passwordLabel = document.querySelector(`label[for="${passwordInput.id}"]`)
+  const emailLabel = screen.getByText('email:')
+  const passwordLabel = screen.getByText('password:')
   const user = userEvent.setup()
 
   await user.click(emailLabel)
