@@ -1,4 +1,5 @@
-import {fireEvent, render, screen} from '@testing-library/react'
+import {render, screen} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Login from './Login'
 
 
@@ -14,15 +15,18 @@ test('renders School Dashboard p', () => {
   expect(pLogin).toBeInTheDocument()
 })
 
-test('inputs get focus when their labels are clicked', () => {
+test('inputs get focus when their labels are clicked', async () => {
   render(<Login />)
 
-  const emailInput = screen.getByLabelText('email:')
-  const passwordInput = screen.getByLabelText('password:')
+  const emailInput = screen.getByLabelText(/email/i)
+  const passwordInput = screen.getByLabelText(/password/i)
+  const emailLabel = document.querySelector(`label[for="${emailInput.id}"]`)
+  const passwordLabel = document.querySelector(`label[for="${passwordInput.id}"]`)
+  const user = userEvent.setup()
 
-  fireEvent.click(screen.getByText('email:'))
+  await user.click(emailLabel)
   expect(emailInput).toHaveFocus()
 
-  fireEvent.click(screen.getByText('password:'))
+  await user.click(passwordLabel)
   expect(passwordInput).toHaveFocus()
 })
