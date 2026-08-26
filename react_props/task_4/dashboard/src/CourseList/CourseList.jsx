@@ -9,10 +9,9 @@ function CourseList({courses = []}){
             </thead>
             <tbody>
                 {courses[0] ?
-                    courses.map((course)=>{
-                        return(<CourseListRow textFirstCell={course.name} textSecondCell={course.credit}/>)
-                    }):
-
+                    courses.map((course)=>(
+                        <CourseListRow key={course.id} textFirstCell={course.name} textSecondCell={course.credit}/>)
+                    ):
                     <CourseListRow textFirstCell="No course available yet"isHeader={true}/>
                     
                 }
