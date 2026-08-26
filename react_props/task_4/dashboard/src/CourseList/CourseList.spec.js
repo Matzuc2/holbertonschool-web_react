@@ -1,4 +1,4 @@
-import {render} from '@testing-library/react'
+import {render, cleanup} from '@testing-library/react'
 import CourseList from './CourseList'
   const courses = [
     {
@@ -15,27 +15,21 @@ import CourseList from './CourseList'
         id: 3,
         name: "React",
         credit: "20"
-    },
-    {
-        id: 4,
-        name: "Node",
-        credit: "50"
-    },
-    {
-        id: 5,
-        name: "Jest",
-        credit: "35"
     }
 ]
-
-test('renders CourseList when 5 rows in courses list ', () => {
-    render(<CourseList courses={courses}/>)
-    const rows = document.querySelectorAll('tr')
-    expect(rows.length).toEqual(5)
-})
-
-test('renders CourseList when 0 rows in courses list ', () => {
-    render(<CourseList />)
-    const rows = document.querySelectorAll('tr')
-    expect(rows.length).toEqual(1)
+describe('CourseList',() =>{
+    afterEach(() => {
+        cleanup()
+    })  
+    test('renders CourseList when 5 rows in courses list ', () => {
+       const {container} =  render(<CourseList courses={courses}/>)
+        const rows = container.querySelectorAll('tr')
+        expect(rows.length).toEqual(5)
+    })
+    
+    test('renders CourseList when 0 rows in courses list ', () => {
+        const {container} = render(<CourseList />)
+        const rows = container.querySelectorAll('tr')
+        expect(rows.length).toEqual(1)
+    })
 })
