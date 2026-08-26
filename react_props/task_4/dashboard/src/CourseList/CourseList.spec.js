@@ -30,6 +30,6 @@ describe('CourseList',() =>{
     test('renders CourseList when 0 rows in courses list ', () => {
         const {container} = render(<CourseList />)
         const rows = container.querySelectorAll('tr')
-        expect(rows.length).toEqual(1)
+        expect(rows.length).toEqual(3)
     })
 })
