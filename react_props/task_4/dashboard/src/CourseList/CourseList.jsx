@@ -10,11 +10,11 @@ function CourseList({courses = []}){
             <tbody>
                 {courses[0] ?
                     courses.map((course)=>{
-                        <CourseListRow textFirstCell={course.name} textSecondCell={course.credit}/>
+                        return(<CourseListRow textFirstCell={course.name} textSecondCell={course.credit}/>)
                     }):
-                    (
-                        <CourseListRow textFirstCell="No course available yet"isHeader={true}/>
-                    )
+
+                    <CourseListRow textFirstCell="No course available yet"isHeader={true}/>
+                    
                 }
             </tbody>
         </table>
