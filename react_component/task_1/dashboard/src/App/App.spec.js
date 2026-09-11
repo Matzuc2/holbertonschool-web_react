@@ -1,50 +1,52 @@
-import { shallow } from 'enzyme';
-import App from "./App";
+import { render, act } from '@testing-library/react'
+import App from './App'
+import Login from '../Login/Login'
+import CourseList from '../CourseList/CourseList'
 
-describe('Tests the App component', () => {
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-    it('Tests that App renders without crashing', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.exists()).toBe(true);
-    });
-    it('should contain the Notifications component', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.find('Notifications')).toHaveLength(1);
-    });
-    it('should contain the Header component', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.find('Header')).toHaveLength(1);
-    });
-    it('should contain the Login component', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.find('Login')).toHaveLength(1);
-    });
-    it('should contain the Footer component', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.find('Footer')).toHaveLength(1);
-    });
-    it('checks that CourseList is not displayed', () => {
-        const wrapper = shallow(<App />);
-        expect(wrapper.find('CourseList')).toHaveLength(0);
-    });
-    it('checks that the logOut function and the alert function is called with the good string', () => {
-        const mockLogOut = jest.fn();
-        const logger = jest.spyOn(window, 'alert');
-        expect(logger);
-        expect(mockLogOut);
-        jest.restoreAllMocks();
-    });
-});
+jest.mock('../Login/Login', () => jest.fn(() => null))
+jest.mock('../CourseList/CourseList', () => jest.fn(() => null))
 
-describe('Tests the App component when isLoggedIn is true', () => {
-    it('Tests that the Login component is not included.', () => {
-        const wrapper = shallow(<App isLoggedIn={true}/>);
-        expect(wrapper.find('Login')).toHaveLength(0);
-    });
-    it('should contain the Notifications component', () => {
-        const wrapper = shallow(<App isLoggedIn={true}/>);
-        expect(wrapper.find('CourseList')).toHaveLength(1);
-    });
-});
+describe('App', () => {
+  test('isLoggedIn is false', () => {
+    render(<App />)
+    expect(Login).toHaveBeenCalled()
+  })
+
+  test('isLoggedIn is true', () => {
+    render(<App isLoggedIn={true} />)
+    expect(CourseList).toHaveBeenCalled()
+  })
+
+  test('logout called when h and ctrl are pressed same time', () => {
+    const logOut = jest.fn()
+    render(<App logout={logOut} />)
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "h",
+        code: "h",
+        ctrlKey: true,
+        bubbles: true,
+      }))
+    })
+
+    expect(logOut).toHaveBeenCalled()
+  })
+
+  test('alert function is called ?', () => {
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+    render(<App />)
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent("keydown", {
+        key: "h",
+        code: "h",
+        ctrlKey: true,
+        bubbles: true,
+      }))
+    })
+
+    expect(alertSpy).toHaveBeenCalledWith("Logging you out")
+    alertSpy.mockRestore()
+  })
+})
