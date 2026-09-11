@@ -22,7 +22,7 @@ test('logout called when h and ctrl are pressed same time', ()=>{
 })
 
 test('alert function is called ?', ()=>{
-    jest.spyOn(window, 'alert').mockImplementation(() => {})
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
     render(<App />)
     document.dispatchEvent(new KeyboardEvent("keydown", {
     key: "h",
@@ -31,4 +31,5 @@ test('alert function is called ?', ()=>{
   }));
 
   expect(window.alert).toHaveBeenCalledWith("Logging you out")
+  alertSpy.mockRestore()
 })

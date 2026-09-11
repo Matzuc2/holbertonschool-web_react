@@ -12,12 +12,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', (event) => {
-      if (event.ctrlKey && event.key === 'h') {
-        alert("Logging you out")
-        this.state.logout()
-      }
-    })
+    document.addEventListener('keydown', this.handleKeyDown)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown)
+  }
+
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert("Logging you out")
+      this.state.logout()
+    }
   }
   render() {
     return(
