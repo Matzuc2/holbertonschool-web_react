@@ -18,11 +18,11 @@ describe('App', () => {
   })
 
   test('logout called when h and ctrl are pressed same time', () => {
-    const logout = jest.fn()
-    render(<App logout={logout} />)
+    const logOut = jest.fn()
+    render(<App logout={logOut} />)
 
     act(() => {
-      document.dispatchEvent(new KeyboardEvent("keydown", {
+      window.dispatchEvent(new KeyboardEvent("keydown", {
         key: "h",
         code: "h",
         ctrlKey: true,
@@ -30,7 +30,7 @@ describe('App', () => {
       }))
     })
 
-    expect(logout).toHaveBeenCalled()
+    expect(logOut).toHaveBeenCalled()
   })
 
   test('alert function is called ?', () => {
@@ -38,7 +38,7 @@ describe('App', () => {
     render(<App />)
 
     act(() => {
-      document.dispatchEvent(new KeyboardEvent("keydown", {
+      window.dispatchEvent(new KeyboardEvent("keydown", {
         key: "h",
         code: "h",
         ctrlKey: true,
