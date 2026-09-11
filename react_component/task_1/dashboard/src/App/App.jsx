@@ -5,11 +5,14 @@ import './App.css'
 import Notifications from '../Notifications/Notifications'
 import CourseList from '../CourseList/CourseList';
 import React from 'react';
-import PropTypes from 'prop-types'
 
 class App extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      logout: props.logout ?? (() => {}),
+      isLoggedIn: props.isLoggedIn ?? false,
+    }
 
     this.courses = [
       { id: 1, name: "ES6", credit: 60 },
@@ -25,18 +28,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown)
+    document.addEventListener('keydown', this.handleKeyDown)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown)
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 
   handleKeyDown = (event) => {
     if (event.ctrlKey && event.key === 'h') {
       event.preventDefault()
       alert("Logging you out")
-      this.state.logOut?.()
+      this.state.logout()
     }
   }
 
@@ -56,16 +59,6 @@ class App extends React.Component {
       </>
     )
   }
-}
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-}
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {}
 }
 
 export default App;
