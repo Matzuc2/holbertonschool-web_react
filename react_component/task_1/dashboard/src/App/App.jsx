@@ -28,11 +28,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.handleKeyDown)
+    window.addEventListener('keydown', this.handleKeyDown)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown)
+    window.removeEventListener('keydown', this.handleKeyDown)
   }
 
   handleKeyDown = (event) => {
