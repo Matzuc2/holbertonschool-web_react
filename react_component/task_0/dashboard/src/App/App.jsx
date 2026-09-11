@@ -3,8 +3,9 @@ import Header from '../Header/Header';
 import Login from '../Login/Login';
 import './App.css'
 import Notifications from '../Notifications/Notifications'
+import React from 'react';
 
-class App extends React.Component() {
+class App extends React.Component {
   render() {
     return(
     <>
