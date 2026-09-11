@@ -1,11 +1,19 @@
 
-import {render, screen} from '@testing-library/react'
+import {render} from '@testing-library/react'
 import App from './App'
+import Login from '../Login/Login'
+import CourseList from '../CourseList/CourseList'
 
-test('renders Footer', () => {
+jest.mock('../Login/Login', () => jest.fn(() => null))
+jest.mock('../CourseList/CourseList', () => jest.fn(() => null))
+test('isLoggedIn is false', () =>{
   render(<App />)
+  expect(Login).toHaveBeenCalled()
+})
 
-  expect(screen.getByRole('contentinfo')).toBeInTheDocument()
+test('isLoggedIn is true', () =>{
+  render(<App isLoggedIn={true} />)
+  expect(CourseList).toHaveBeenCalled()
 })
 
 test('logout called when h and ctrl are pressed same time', ()=>{
@@ -22,7 +30,7 @@ test('logout called when h and ctrl are pressed same time', ()=>{
 })
 
 test('alert function is called ?', ()=>{
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
+    jest.spyOn(window, 'alert').mockImplementation(() => {})
     render(<App />)
     document.dispatchEvent(new KeyboardEvent("keydown", {
     key: "h",
@@ -31,5 +39,5 @@ test('alert function is called ?', ()=>{
   }));
 
   expect(window.alert).toHaveBeenCalledWith("Logging you out")
-  alertSpy.mockRestore()
 })
+
