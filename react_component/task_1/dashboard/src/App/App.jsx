@@ -10,7 +10,6 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      logout: props.logout ?? (() => {}),
       isLoggedIn: props.isLoggedIn ?? false,
     }
 
@@ -39,7 +38,7 @@ class App extends React.Component {
     if (event.ctrlKey && event.key === 'h') {
       event.preventDefault()
       alert("Logging you out")
-      this.state.logout()
+      this.props.logOut()
     }
   }
 
@@ -59,6 +58,10 @@ class App extends React.Component {
       </>
     )
   }
+}
+
+App.defaultProps = {
+  logOut: () => {},
 }
 
 export default App;

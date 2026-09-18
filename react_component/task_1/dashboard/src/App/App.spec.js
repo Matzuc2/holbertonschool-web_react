@@ -19,34 +19,44 @@ describe('App', () => {
 
   test('logout called when h and ctrl are pressed same time', () => {
     const logOut = jest.fn()
-    render(<App logout={logOut} />)
+    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
 
-    act(() => {
-      window.dispatchEvent(new KeyboardEvent("keydown", {
-        key: "h",
-        code: "h",
-        ctrlKey: true,
-        bubbles: true,
-      }))
-    })
+    try {
+      render(<App logOut={logOut} />)
 
-    expect(logOut).toHaveBeenCalled()
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent("keydown", {
+          key: "h",
+          code: "h",
+          ctrlKey: true,
+          bubbles: true,
+        }))
+      })
+
+      expect(logOut).toHaveBeenCalledTimes(1)
+    } finally {
+      alertSpy.mockRestore()
+    }
   })
 
-  test('alert function is called ?', () => {
+  test('alert function is called with the logout message', () => {
     const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
-    render(<App />)
 
-    act(() => {
-      window.dispatchEvent(new KeyboardEvent("keydown", {
-        key: "h",
-        code: "h",
-        ctrlKey: true,
-        bubbles: true,
-      }))
-    })
+    try {
+      render(<App />)
 
-    expect(alertSpy).toHaveBeenCalledWith("Logging you out")
-    alertSpy.mockRestore()
+      act(() => {
+        window.dispatchEvent(new KeyboardEvent("keydown", {
+          key: "h",
+          code: "h",
+          ctrlKey: true,
+          bubbles: true,
+        }))
+      })
+
+      expect(alertSpy).toHaveBeenCalledWith("Logging you out")
+    } finally {
+      alertSpy.mockRestore()
+    }
   })
 })
