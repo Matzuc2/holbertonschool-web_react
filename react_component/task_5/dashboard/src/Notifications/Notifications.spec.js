@@ -58,3 +58,43 @@ test('logs when a notification is marked as read', () => {
     consoleSpy.mockRestore()
   }
 })
+
+test('does not re-render when the notifications length remains the same', () => {
+  const { rerender } = render(
+    <Notifications
+      displayDrawer={true}
+      notifications={[{ id: 1, type: 'default', value: 'First notification' }]}
+    />
+  )
+
+  rerender(
+    <Notifications
+      displayDrawer={true}
+      notifications={[{ id: 2, type: 'default', value: 'Second notification' }]}
+    />
+  )
+
+  expect(screen.getByText('First notification')).toBeInTheDocument()
+  expect(screen.queryByText('Second notification')).not.toBeInTheDocument()
+})
+
+test('re-renders when the notifications length changes', () => {
+  const { rerender } = render(
+    <Notifications
+      displayDrawer={true}
+      notifications={[{ id: 1, type: 'default', value: 'First notification' }]}
+    />
+  )
+
+  rerender(
+    <Notifications
+      displayDrawer={true}
+      notifications={[
+        { id: 1, type: 'default', value: 'First notification' },
+        { id: 2, type: 'urgent', value: 'Second notification' },
+      ]}
+    />
+  )
+
+  expect(screen.getByText('Second notification')).toBeInTheDocument()
+})
