@@ -1,4 +1,4 @@
-import { render, act } from '@testing-library/react'
+import { render, act, screen } from '@testing-library/react'
 import App from './App'
 import Login from '../Login/Login'
 import CourseList from '../CourseList/CourseList'
@@ -10,6 +10,13 @@ describe('App', () => {
   test('isLoggedIn is false', () => {
     render(<App />)
     expect(Login).toHaveBeenCalled()
+  })
+
+  test('renders school news block by default', () => {
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: /news from the school/i })).toBeInTheDocument()
+    expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument()
   })
 
   test('isLoggedIn is true', () => {

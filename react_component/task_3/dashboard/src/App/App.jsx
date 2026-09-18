@@ -4,6 +4,8 @@ import Login from '../Login/Login';
 import './App.css'
 import Notifications from '../Notifications/Notifications'
 import CourseList from '../CourseList/CourseList';
+import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import React from 'react';
 
 class App extends React.Component {
@@ -53,7 +55,18 @@ class App extends React.Component {
             <Notifications notifications={this.notificationsList} />
           </div>
           <Header />
-          {isLoggedIn ? <CourseList courses={this.courses} /> : <Login />}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
+          {isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseList courses={this.courses} />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom title="Log in to continue">
+              <Login />
+            </BodySectionWithMarginBottom>
+          )}
           <Footer />
         </div>
       </>
