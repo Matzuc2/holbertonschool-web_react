@@ -53,7 +53,7 @@ class App extends React.Component {
 
     return (
       <>
-        <div className="App flex min-h-screen flex-col">
+        <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className='root-notifications'>
             <Notifications displayDrawer={true} notifications={this.notificationsList} />
           </div>
