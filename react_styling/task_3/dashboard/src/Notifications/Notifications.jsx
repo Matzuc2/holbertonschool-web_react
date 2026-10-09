@@ -13,13 +13,13 @@ class Notifications extends React.Component {
     render(){
       const { displayDrawer = false, notifications = [] } = this.props
       return (
-        <div className="fixed top-0 right-0 w-full md:w-[25%]">
-          <div className="notification-title text-right">
+        <div className="fixed inset-0 z-50 h-screen w-full overflow-y-auto bg-white p-3 min-[912px]:inset-auto min-[912px]:top-0 min-[912px]:right-0 min-[912px]:h-auto min-[912px]:w-1/4 min-[912px]:overflow-visible min-[912px]:p-0">
+          <div className="notification-title text-right text-sm min-[912px]:text-base">
             <p>Your Notifications</p>
           </div>
           {displayDrawer === true &&
           
-          <div className="notification-items border border-dashed border-[var(--main-color)] p-[6px]">
+          <div className="notification-items border border-dashed border-[var(--main-color)] p-3 min-[912px]:p-[6px]">
             {notifications.length > 0 ?
               <>
                 <button
@@ -30,7 +30,7 @@ class Notifications extends React.Component {
                   Close
                 </button>
                 <p>Here is the list of notifications</p>
-              <ul>
+              <ul className="list-inside list-disc space-y-2 p-0 min-[912px]:space-y-0">
                 {notifications.map((notification)=>{
                   return <NotificationItem key={notification.id} type={notification.type} html={notification.html} value={notification.value} markAsRead={() => this.markAsRead(notification.id)} />
                 })}

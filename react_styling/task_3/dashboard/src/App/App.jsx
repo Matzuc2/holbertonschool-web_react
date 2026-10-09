@@ -53,13 +53,13 @@ class App extends React.Component {
 
     return (
       <>
-        <div className="App flex min-h-screen flex-col">
+        <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className='root-notifications'>
             <Notifications displayDrawer={true} notifications={this.notificationsList} />
           </div>
           <Header />
           <BodySection title="News from the School">
-            <p>Holberton School News goes here</p>
+            <p>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique, asperiores architecto blanditiis fuga doloribus sit illum aliquid ea distinctio minus accusantium, impedit quo voluptatibus ut magni dicta. Recusandae, quia dicta?</p>
           </BodySection>
           {isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">

@@ -21,7 +21,7 @@ describe('App', () => {
     render(<App />)
 
     expect(screen.getByRole('heading', { name: /news from the school/i })).toBeInTheDocument()
-    expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument()
+    expect(screen.getByText(/ipsum lorem ipsum dolor sit amet consectetur/i)).toBeInTheDocument()
   })
 
   test('isLoggedIn is true', () => {
