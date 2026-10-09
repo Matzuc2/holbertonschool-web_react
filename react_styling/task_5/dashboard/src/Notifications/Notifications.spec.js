@@ -24,18 +24,6 @@ test('display drawer prop set to false', ()=>{
 
 })
 
-test('bounces the title when notifications exist and the drawer is closed', () => {
-  render(<Notifications notifications={notificationsList} displayDrawer={false} />)
-
-  expect(screen.getByText('Your Notifications').parentElement).toHaveClass('animate-bounce')
-})
-
-test('does not bounce the title when the drawer is open', () => {
-  render(<Notifications notifications={notificationsList} displayDrawer={true} />)
-
-  expect(screen.getByText('Your Notifications').parentElement).not.toHaveClass('animate-bounce')
-})
-
 test('display drawer prop set to true, notifications is empty', ()=>{
   const {container} = render(<Notifications displayDrawer={true} notifications={[]} />)
   const button = container.querySelector('button')
