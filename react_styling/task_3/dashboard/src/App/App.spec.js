@@ -7,9 +7,14 @@ jest.mock('../Login/Login', () => jest.fn(() => null))
 jest.mock('../CourseList/CourseList', () => jest.fn(() => null))
 
 describe('App', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   test('isLoggedIn is false', () => {
     render(<App />)
     expect(Login).toHaveBeenCalled()
+    expect(CourseList).not.toHaveBeenCalled()
   })
 
   test('renders school news block by default', () => {
@@ -22,6 +27,7 @@ describe('App', () => {
   test('isLoggedIn is true', () => {
     render(<App isLoggedIn={true} />)
     expect(CourseList).toHaveBeenCalled()
+    expect(Login).not.toHaveBeenCalled()
   })
 
   test('logout called when h and ctrl are pressed same time', () => {
