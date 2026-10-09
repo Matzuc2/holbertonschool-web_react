@@ -13,11 +13,11 @@ test('calls markAsRead when clicked', () => {
 test('renders good color depending on default type', () => {
   render(<NotificationItem  type='default' />)
   const li = document.querySelector('li')
-  expect(li.style.color).toBe('blue')
+  expect(li).toHaveClass('text-[var(--default-notification-item)]')
 })
 
 test('renders good color depending on urgent type', () => {
   render(<NotificationItem  type='urgent' />)
   const li = document.querySelector('li')
-  expect(li.style.color).toBe('red')
+  expect(li).toHaveClass('text-[var(--urgent-notification-item)]')
 })
