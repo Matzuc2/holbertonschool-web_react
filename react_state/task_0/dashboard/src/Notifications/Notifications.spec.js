@@ -68,7 +68,7 @@ test('clicking the close button calls handleHideDrawer', () => {
     <Notifications
       displayDrawer={true}
       notifications={notificationsList}
-      hideDisplayDrawer={handleHideDrawer}
+      handleHideDrawer={handleHideDrawer}
     />
   )
 

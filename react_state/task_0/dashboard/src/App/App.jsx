@@ -69,7 +69,7 @@ class App extends React.Component {
       <>
         <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className='root-notifications'>
-            <Notifications displayDrawer={this.state.displayDrawer} notifications={this.notificationsList} handleDisplayDrawer={this.handleDisplayDrawer} hideDisplayDrawer={this.hideDisplayDrawer} />
+            <Notifications displayDrawer={this.state.displayDrawer} notifications={this.notificationsList} handleDisplayDrawer={this.handleDisplayDrawer} handleHideDrawer={this.hideDisplayDrawer} />
           </div>
           <Header />
           <BodySection title="News from the School">

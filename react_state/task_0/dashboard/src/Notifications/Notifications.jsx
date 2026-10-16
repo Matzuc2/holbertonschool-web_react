@@ -12,7 +12,13 @@ class Notifications extends React.Component {
   }
 
     render(){
-      const { displayDrawer = false, notifications = [], handleDisplayDrawer, hideDisplayDrawer } = this.props
+      const {
+        displayDrawer = false,
+        notifications = [],
+        handleDisplayDrawer,
+        handleHideDrawer,
+        hideDisplayDrawer,
+      } = this.props
       return (
         <div className="fixed inset-0 z-50 h-screen w-full overflow-y-auto bg-white p-3 min-[912px]:inset-auto min-[912px]:top-0 min-[912px]:right-0 min-[912px]:h-auto min-[912px]:w-1/4 min-[912px]:overflow-visible min-[912px]:p-0">
           <div className={`notification-title text-right text-sm min-[912px]:text-base ${notifications.length > 0 && !displayDrawer ? 'animate-bounce' : ''}`}>
@@ -26,7 +32,7 @@ class Notifications extends React.Component {
                 <button
                   aria-label='Close'
                   style={{ float: 'right' }}
-                  onClick={hideDisplayDrawer}
+                  onClick={handleHideDrawer || hideDisplayDrawer}
                 >
                   Close
                 </button>
