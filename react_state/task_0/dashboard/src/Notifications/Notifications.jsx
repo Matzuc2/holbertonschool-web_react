@@ -17,7 +17,6 @@ class Notifications extends React.Component {
         notifications = [],
         handleDisplayDrawer,
         handleHideDrawer,
-        hideDisplayDrawer,
       } = this.props
       return (
         <div className="fixed inset-0 z-50 h-screen w-full overflow-y-auto bg-white p-3 min-[912px]:inset-auto min-[912px]:top-0 min-[912px]:right-0 min-[912px]:h-auto min-[912px]:w-1/4 min-[912px]:overflow-visible min-[912px]:p-0">
@@ -32,7 +31,7 @@ class Notifications extends React.Component {
                 <button
                   aria-label='Close'
                   style={{ float: 'right' }}
-                  onClick={handleHideDrawer || hideDisplayDrawer}
+                  onClick={handleHideDrawer}
                 >
                   Close
                 </button>
