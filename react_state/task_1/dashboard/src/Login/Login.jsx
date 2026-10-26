@@ -14,31 +14,25 @@ class Login extends React.Component {
 
     handleLoginSubmit = (event) => {
         event.preventDefault();
-        this.setState({isLoggedIn : true})
+        this.setState({ isLoggedIn: true })
     }
 
     handleChangeEmail = (event) => {
-        this.setState({email : event.target.value}, this.handleEnableSubmit)
-
-
+        this.setState({ email: event.target.value }, this.handleEnableSubmit)
     }
 
     handleChangePassword = (event) => {
-        this.setState({password : event.target.value}, this.handleEnableSubmit)
+        this.setState({ password: event.target.value }, this.handleEnableSubmit)
     }
 
-    handleEnableSubmit = () =>{
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(
-        this.state.email.trim() != ""&&
-        this.state.password.trim() != "" &&
-        emailRegex.test(this.state.email)&&
-        this.state.password.length >= 8)
-        {
-            this.setState({enableSubmit: true})
-        }else{
-            this.setState({enableSubmit: false})
-        }
+    handleEnableSubmit = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        const isValid = this.state.email.trim() !== ""
+            && this.state.password.trim() !== ""
+            && emailRegex.test(this.state.email)
+            && this.state.password.length >= 8
+
+        this.setState({ enableSubmit: isValid })
     }
     
 
@@ -53,9 +47,7 @@ class Login extends React.Component {
                         type="text"
                         id="email"
                         name="email"
-                        onInput={(event) => {
-                            this.handleChangeEmail(event);
-                        }}
+                        onInput={this.handleChangeEmail}
                     />
 
                     <label htmlFor="password">password:</label>
@@ -63,15 +55,13 @@ class Login extends React.Component {
                         type="password"
                         id="password"
                         name="password"
-                        onInput={(event) => {
-                            this.handleChangePassword(event);
-                        }}
+                        onInput={this.handleChangePassword}
                     />
 
                     <input
                         type="submit"
                         value="OK"
-                        disabled= {!this.state.enableSubmit}
+                        disabled={!this.state.enableSubmit}
                         className="rounded border border-gray-400 px-3 py-1"
                     />
                 </form>
@@ -80,4 +70,5 @@ class Login extends React.Component {
     }
 
 }
+
 export default Login;
