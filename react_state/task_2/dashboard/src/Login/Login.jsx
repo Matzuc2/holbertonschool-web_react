@@ -7,13 +7,14 @@ class Login extends Component {
         this.state = {
             email: props.email ?? '',
             password: props.password ?? '',
+            logIn: props.logIn ?? (() => {}),
             enableSubmit: false
         }
     }
 
     handleLoginSubmit = (event) => {
         event.preventDefault();
-        this.props.logIn(this.state.email, this.state.password)
+        this.state.logIn(this.state.email, this.state.password)
     }
 
     handleChangeEmail = (event) => {
