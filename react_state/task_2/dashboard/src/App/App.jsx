@@ -7,7 +7,7 @@ import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
 import React from 'react';
-import newContext from '../Context/context';
+import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
@@ -16,16 +16,20 @@ class App extends React.Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-      displayDrawer : false,
-      user: {
-        email: '',
-        password: '',
-        isLoggedIn: false
-      }
+    const user = {
+      email: '',
+      password: '',
+      isLoggedIn: false
     }
 
-    
+    this.state = {
+      displayDrawer: false,
+      user,
+      contextValue: {
+        user,
+        logOut: this.logOut
+      }
+    }
 
     this.courses = [
       { id: 1, name: "ES6", credit: 60 },
@@ -41,24 +45,40 @@ class App extends React.Component {
   }
 
   logIn = (email, password) => {
-    this.setState((prevState) => ({ 
-      user :{
+    this.setState((prevState) => {
+      const user = {
         ...prevState.user,
         email,
         password,
         isLoggedIn: true
       }
-    })) 
+
+      return {
+        user,
+        contextValue: {
+          user,
+          logOut: this.logOut
+        }
+      }
+    })
   }
 
-  logOut = () =>{
-    this.setState(() =>({
-      user:{
+  logOut = () => {
+    this.setState(() => {
+      const user = {
         email: '',
         password: '',
         isLoggedIn: false
       }
-    }))
+
+      return {
+        user,
+        contextValue: {
+          user,
+          logOut: this.logOut
+        }
+      }
+    })
   }
 
   componentDidMount() {
@@ -68,15 +88,13 @@ class App extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown)
   }
-  
+
   handleDisplayDrawer = () => {
     this.setState({ displayDrawer: true })
-    console.log("display set to true")
   }
 
   handleHideDrawer = () => {
     this.setState({ displayDrawer: false })
-    console.log("display set to false")
   }
 
   handleKeyDown = (event) => {
@@ -88,33 +106,39 @@ class App extends React.Component {
   }
 
   render() {
-
     const { user } = this.state
 
     return (
-      <>
-        <newContext.Provider value={{ user: this.state.user, logOut: this.logOut }}>
-            <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
-              <div className='root-notifications'>
-                <Notifications displayDrawer={this.state.displayDrawer} notifications={this.notificationsList} handleDisplayDrawer={this.handleDisplayDrawer} handleHideDrawer={this.handleHideDrawer} />
-              </div>
-              <Header />
-              <BodySection title="News from the School">
-                <p>Holberton School News goes here</p>
-              </BodySection>
-              { user.isLoggedIn ? (
-                <BodySectionWithMarginBottom title="Course list">
-                  <CourseListWithLogging courses={this.courses} />
-                </BodySectionWithMarginBottom>
-              ) : (
-                <BodySectionWithMarginBottom>
-                  <LoginWithLogging email={user.email} password={user.password} logIn={this.logIn} />
-                </BodySectionWithMarginBottom>
-              )}
-              <Footer />
-            </div>
-        </newContext.Provider>
-      </>
+      <AppContext.Provider value={this.state.contextValue}>
+        <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
+          <div className="root-notifications">
+            <Notifications
+              displayDrawer={this.state.displayDrawer}
+              notifications={this.notificationsList}
+              handleDisplayDrawer={this.handleDisplayDrawer}
+              handleHideDrawer={this.handleHideDrawer}
+            />
+          </div>
+          <Header />
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
+          {user.isLoggedIn ? (
+            <BodySectionWithMarginBottom title="Course list">
+              <CourseListWithLogging courses={this.courses} />
+            </BodySectionWithMarginBottom>
+          ) : (
+            <BodySectionWithMarginBottom>
+              <LoginWithLogging
+                email={user.email}
+                password={user.password}
+                logIn={this.logIn}
+              />
+            </BodySectionWithMarginBottom>
+          )}
+          <Footer />
+        </div>
+      </AppContext.Provider>
     )
   }
 }

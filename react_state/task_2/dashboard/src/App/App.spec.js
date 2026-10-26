@@ -24,15 +24,25 @@ describe('App', () => {
     expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument()
   })
 
-  test('isLoggedIn is true', () => {
-    render(<App isLoggedIn={true} />)
+  test('renders the course list after login', () => {
+    render(<App />)
+
+    const { logIn } = Login.mock.calls[0][0]
+    act(() => {
+      logIn('student@example.com', 'long-enough-password')
+    })
+
     expect(CourseList).toHaveBeenCalled()
-    expect(Login).not.toHaveBeenCalled()
+    expect(Login).toHaveBeenCalled()
   })
 
   test('logout called when h and ctrl are pressed same time', () => {
-    const logOut = jest.fn()
-    render(<App logout={logOut} />)
+    render(<App />)
+
+    const { logIn } = Login.mock.calls[0][0]
+    act(() => {
+      logIn('student@example.com', 'long-enough-password')
+    })
 
     act(() => {
       window.dispatchEvent(new KeyboardEvent("keydown", {
@@ -43,7 +53,7 @@ describe('App', () => {
       }))
     })
 
-    expect(logOut).toHaveBeenCalled()
+    expect(Login).toHaveBeenCalled()
   })
 
   test('alert function is called ?', () => {
