@@ -12,32 +12,29 @@ class Login extends React.Component {
         }
     }
 
-    handleLoginSubmit = () => {
+    handleLoginSubmit = (event) => {
+        event.preventDefault();
         this.setState({isLoggedIn : true})
     }
 
     handleChangeEmail = (event) => {
         this.setState({email : event.target.value}, this.handleEnableSubmit)
 
-        console.log("the email is changing")
 
     }
 
     handleChangePassword = (event) => {
         this.setState({password : event.target.value}, this.handleEnableSubmit)
-        console.log("the password is changing")
     }
 
     handleEnableSubmit = () =>{
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        console.log("enable submit called")
         if(
         this.state.email.trim() != ""&&
         this.state.password.trim() != "" &&
         emailRegex.test(this.state.email)&&
-        this.state.password.length > 8)
+        this.state.password.length >= 8)
         {
-            console.log("submit put to true")
             this.setState({enableSubmit: true})
         }else{
             this.setState({enableSubmit: false})
