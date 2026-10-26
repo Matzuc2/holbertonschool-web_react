@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Component, Fragment } from 'react';
 
-class Login extends React.Component {
+class Login extends Component {
     constructor(props){
         super(props)
 
@@ -39,36 +39,37 @@ class Login extends React.Component {
 
     render(){
         return(
-            <div className="Login flex min-h-[70vh] flex-col items-start gap-2 border-t-2 border-[var(--main-color)] p-3 min-[520px]:p-5">
-                <p>Login to access the full dashboard</p>
-                <form onSubmit={this.handleLoginSubmit}>
-                    <label htmlFor="email">email:</label>
-                    <input
-                        type="text"
-                        id="email"
-                        name="email"
-                        onInput={this.handleChangeEmail}
-                    />
+            <Fragment>
+                <div className="Login flex min-h-[70vh] flex-col items-start gap-2 border-t-2 border-[var(--main-color)] p-3 min-[520px]:p-5">
+                    <p>Login to access the full dashboard</p>
+                    <form onSubmit={this.handleLoginSubmit}>
+                        <label htmlFor="email">email:</label>
+                        <input
+                            type="text"
+                            id="email"
+                            name="email"
+                            onInput={this.handleChangeEmail}
+                        />
 
-                    <label htmlFor="password">password:</label>
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        onInput={this.handleChangePassword}
-                    />
+                        <label htmlFor="password">password:</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            onInput={this.handleChangePassword}
+                        />
 
-                    <input
-                        type="submit"
-                        value="OK"
-                        disabled={!this.state.enableSubmit}
-                        className="rounded border border-gray-400 px-3 py-1"
-                    />
-                </form>
-            </div>
+                        <input
+                            type="submit"
+                            value="OK"
+                            disabled={!this.state.enableSubmit}
+                            className="rounded border border-gray-400 px-3 py-1"
+                        />
+                    </form>
+                </div>
+            </Fragment>
         )
     }
-
 }
 
 export default Login;
