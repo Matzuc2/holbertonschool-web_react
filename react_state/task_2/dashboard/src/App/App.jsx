@@ -7,7 +7,7 @@ import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
 import React from 'react';
-import AppContext from '../Context/context';
+import newContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
@@ -24,11 +24,12 @@ class App extends React.Component {
 
     this.state = {
       displayDrawer: false,
+      user
+    }
+
+    this.providerValue = {
       user,
-      contextValue: {
-        user,
-        logOut: this.logOut
-      }
+      logOut: this.logOut
     }
 
     this.courses = [
@@ -53,13 +54,12 @@ class App extends React.Component {
         isLoggedIn: true
       }
 
-      return {
+      this.providerValue = {
         user,
-        contextValue: {
-          user,
-          logOut: this.logOut
-        }
+        logOut: this.logOut
       }
+
+      return { user }
     })
   }
 
@@ -71,13 +71,12 @@ class App extends React.Component {
         isLoggedIn: false
       }
 
-      return {
+      this.providerValue = {
         user,
-        contextValue: {
-          user,
-          logOut: this.logOut
-        }
+        logOut: this.logOut
       }
+
+      return { user }
     })
   }
 
@@ -109,7 +108,7 @@ class App extends React.Component {
     const { user } = this.state
 
     return (
-      <AppContext.Provider value={this.state.contextValue}>
+      <newContext.Provider value={this.providerValue}>
         <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className="root-notifications">
             <Notifications
@@ -138,7 +137,7 @@ class App extends React.Component {
           )}
           <Footer />
         </div>
-      </AppContext.Provider>
+      </newContext.Provider>
     )
   }
 }
