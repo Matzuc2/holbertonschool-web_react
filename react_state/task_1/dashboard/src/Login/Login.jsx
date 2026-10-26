@@ -1,0 +1,86 @@
+import React from "react";
+
+class Login extends React.Component {
+    constructor(props){
+        super(props)
+
+        this.state = {
+            isLoggedIn: false,
+            email: "",
+            password: "",
+            enableSubmit: false
+        }
+    }
+
+    handleLoginSubmit = () => {
+        this.setState({isLoggedIn : true})
+    }
+
+    handleChangeEmail = (event) => {
+        this.setState({email : event.target.value}, this.handleEnableSubmit)
+
+        console.log("the email is changing")
+
+    }
+
+    handleChangePassword = (event) => {
+        this.setState({password : event.target.value}, this.handleEnableSubmit)
+        console.log("the password is changing")
+    }
+
+    handleEnableSubmit = () =>{
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        console.log("enable submit called")
+        if(
+        this.state.email.trim() != ""&&
+        this.state.password.trim() != "" &&
+        emailRegex.test(this.state.email)&&
+        this.state.password.length > 8)
+        {
+            console.log("submit put to true")
+            this.setState({enableSubmit: true})
+        }else{
+            this.setState({enableSubmit: false})
+        }
+    }
+    
+
+
+    render(){
+        return(
+            <div className="Login flex min-h-[70vh] flex-col items-start gap-2 border-t-2 border-[var(--main-color)] p-3 min-[520px]:p-5">
+                <p>Login to access the full dashboard</p>
+                <form onSubmit={this.handleLoginSubmit}>
+                    <label htmlFor="email">email:</label>
+                    <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        onInput={(event) => {
+                            this.handleChangeEmail(event);
+                        }}
+                    />
+
+                    <label htmlFor="password">password:</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        onInput={(event) => {
+                            this.handleChangePassword(event);
+                        }}
+                    />
+
+                    <input
+                        type="submit"
+                        value="OK"
+                        disabled= {!this.state.enableSubmit}
+                        className="rounded border border-gray-400 px-3 py-1"
+                    />
+                </form>
+            </div>
+        )
+    }
+
+}
+export default Login;
