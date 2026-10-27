@@ -1,5 +1,6 @@
 import holbertonLogo from '../assets/holberton-logo.jpg'
 import AppContext from '../Context/context';
+import React from 'react';
 
 class Header extends React.Component {
   constructor(props){
@@ -8,6 +9,7 @@ class Header extends React.Component {
   static contextType = AppContext
   render(){
     const {user, logOut} = this.context
+    console.log(user)
     return (
      <>
        <div className="header">
