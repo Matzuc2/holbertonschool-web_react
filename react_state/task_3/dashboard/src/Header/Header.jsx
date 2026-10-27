@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import holbertonLogo from '../assets/holberton-logo.jpg'
 import AppContext from '../Context/context';
 
