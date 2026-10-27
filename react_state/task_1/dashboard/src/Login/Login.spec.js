@@ -54,3 +54,34 @@ test('enables submit input only when valid email and password are provided', asy
 
   expect(submitInput).toBeEnabled()
 })
+
+test('keeps submit disabled when the email is invalid', async () => {
+  const user = userEvent.setup()
+  render(<Login />)
+
+  const emailInput = screen.getByLabelText(/email/i)
+  const passwordInput = screen.getByLabelText(/password/i)
+  const submitInput = screen.getByRole('button', { name: 'OK' })
+
+  await user.type(emailInput, 'invalid-email')
+  await user.type(passwordInput, 'valid-password')
+
+  expect(submitInput).toBeDisabled()
+})
+
+test('keeps submit disabled with 7 characters and enables it with 8 characters', async () => {
+  const user = userEvent.setup()
+  render(<Login />)
+
+  const emailInput = screen.getByLabelText(/email/i)
+  const passwordInput = screen.getByLabelText(/password/i)
+  const submitInput = screen.getByRole('button', { name: 'OK' })
+
+  await user.type(emailInput, 'student@example.com')
+
+  await user.type(passwordInput, '1234567')
+  expect(submitInput).toBeDisabled()
+
+  await user.type(passwordInput, '8')
+  expect(submitInput).toBeEnabled()
+})
