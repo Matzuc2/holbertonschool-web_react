@@ -39,5 +39,5 @@ test('displays the Contact us link when the user is logged in', () => {
     isLoggedIn: true,
   })
 
-  expect(screen.getByText('Contact us')).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'Contact us' })).toBeInTheDocument()
 })
