@@ -1,0 +1,1 @@
+This project teach us how to switch from old React with classes (2018 or 2019 ?) to modern React, using Functionnal Component and hooks instead of class and manual state management.
