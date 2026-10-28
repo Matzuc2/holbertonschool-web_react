@@ -38,44 +38,38 @@ function App(props){
       courses: coursesList
   })
 
-  const [provider, setProvider] = useState( {
-      user,
-      logOut: logOut
-  })
 
-  function logIn (email, password) {
-    setState((prevState) => ({...prevState, user: {
-      email: email,
-      password: password,
-      isLoggedIn: true
-    }}))
-    setProvider((prevState) => ({...prevState, user: {
-      email: email,
-      password: password,
-      isLoggedIn: true
-    }}))
-    console.log('isLoggedin  : ' + state.user.isLoggedIn)
-  }
+  const logIn = useCallback((email, password) => {
+    setState((prevState) => ({
+      ...prevState,
+      user: {
+        email,
+        password,
+        isLoggedIn: true,
+      },
+    }))
+  }, [])
 
-  function logOut(){
-    const loggedOutuser = {
-      email: '',
-      password: '',
-      isLoggedIn: false
-    }
-    setState((prev) => ({...prev, user: loggedOutuser}))
-    setProvider((prev) => ({...prev, user: loggedOutuser}))  
-  }
+  const logOut = useCallback(() => {
+    setState((prevState) => ({
+      ...prevState,
+      user: {
+        email: '',
+        password: '',
+        isLoggedIn: false,
+      },
+    }))
+  }, [])
 
   const markNotificationAsRead = useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`)
 
     setState((prevState) => ({
-      ...prevState,
-      notifications: prevState.notifications.filter(
-        (notification) => notification.id !== id
-      ),
-    }))
+        ...prevState,
+        notifications: prevState.notifications.filter(
+          (notification) => notification.id !== id
+        ),
+      }))
   }, [])
 
   const handleDisplayDrawer = useCallback(() => {
@@ -92,7 +86,10 @@ function App(props){
     }))
   }, [])
 
-  
+  const provider = {
+    user: state.user,
+    logOut,
+  }
 
   return (
       <AppContext.Provider value={provider}>
