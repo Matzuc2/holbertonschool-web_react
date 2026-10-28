@@ -28,8 +28,8 @@ function Login (props){
 
         console.log('im triggered')
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        const isValid = formData.email.trim() !=""
-        && emailRegex.test(formData.email)
+        const isValid = data.email.trim() !=""
+        && emailRegex.test(data.email)
             && data.password.trim() != ""
             && data.password.length >= 8
         console.log(isValid)
