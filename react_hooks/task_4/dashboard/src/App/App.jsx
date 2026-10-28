@@ -6,13 +6,13 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
-function App(props){
+const App = memo(function App(props){
   const user = {
       email: '',
       password: '',
@@ -119,7 +119,7 @@ function App(props){
       </AppContext.Provider>
     )
 
-}
+})
 
 
 export default App;
