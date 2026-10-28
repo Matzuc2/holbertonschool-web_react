@@ -6,13 +6,13 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useState, memo } from 'react';
+import React, { useCallback, useState } from 'react';
 import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
-const App = memo(function App(props){
+function App(props){
   const user = {
       email: '',
       password: '',
@@ -67,23 +67,32 @@ const App = memo(function App(props){
     setProvider((prev) => ({...prev, user: loggedOutuser}))  
   }
 
-  function markNotificationAsRead (id) {
+  const markNotificationAsRead = useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`)
+
     setState((prevState) => ({
       ...prevState,
       notifications: prevState.notifications.filter(
         (notification) => notification.id !== id
-      )
+      ),
     }))
-  }
+  }, [])
 
-  function handleDisplayDrawer() {
-    setState((prev) => ({...prev, displayDrawer: true }))
-  }
+  const handleDisplayDrawer = useCallback(() => {
+    setState((prevState) => ({
+      ...prevState,
+      displayDrawer: true,
+    }))
+  }, [])
 
-  function handleHideDrawer(){
-    setState((prev) => ({...prev, displayDrawer: false }))
-  }
+  const handleHideDrawer = useCallback(() => {
+    setState((prevState) => ({
+      ...prevState,
+      displayDrawer: false,
+    }))
+  }, [])
+
+  
 
   return (
       <AppContext.Provider value={provider}>
@@ -119,7 +128,7 @@ const App = memo(function App(props){
       </AppContext.Provider>
     )
 
-})
+}
 
 
 export default App;
