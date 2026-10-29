@@ -60,13 +60,13 @@ function App(props){
     );
   }, [])
 
-  const handleDisplayDrawer = useCallback(() => {
+  const handleDisplayDrawer = React.useCallback(() => {
     setDisplayDrawer(true);
-  }, [])
+  }, []);
 
-  const handleHideDrawer = useCallback(() => {
+  const handleHideDrawer = React.useCallback(() => {
     setDisplayDrawer(false);
-  }, [])
+  }, []);
 
   const provider = useMemo(
   () => ({
