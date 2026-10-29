@@ -13,7 +13,6 @@
     "@fontsource/roboto": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "axios": "^1.21.0",
-    "jest-mock-axios": "^4.9.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwindcss": "^4.3.3"
@@ -40,6 +39,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
+    "jest-mock-axios": "^4.9.1",
     "vite": "^8.2.0"
   },
   "jest": {
