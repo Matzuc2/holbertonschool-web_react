@@ -45,7 +45,7 @@ function Login (props){
                 <div className="Login flex min-h-[70vh] flex-col items-start gap-2 border-t-2 border-[var(--main-color)] p-3 min-[520px]:p-5">
                     <p>Login to access the full dashboard</p>
                     <form onSubmit={handleLoginSubmit}>
-                        <label htmlFor="email">email:</label>
+                        <label htmlFor="email">Email:</label>
                         <input
                             type="text"
                             value={formData.email}
@@ -54,7 +54,7 @@ function Login (props){
                             onChange={handleChangeEmail}
                         />
 
-                        <label htmlFor="password">password:</label>
+                        <label htmlFor="password">Password:</label>
                         <input
                             type="password"
                             value={formData.password}

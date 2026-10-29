@@ -14,8 +14,14 @@ function Header (){
               user.isLoggedIn &&
               (
                 <div id='logoutSection'>
-                  <p>Welcome {user.email}</p>
-                  <a href="#logout" onClick={logOut}>(logout)</a>
+                  <p>Welcome <b>{user.email}</b></p>
+                  <a
+                    href="#logout"
+                    onClick={logOut}
+                    className="cursor-pointer text-blue-600 underline"
+                  >
+                    (logout)
+                  </a>
                 </div>
               )
             }
