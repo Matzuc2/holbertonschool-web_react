@@ -51,8 +51,8 @@ function App(props){
   
   useEffect(() => {
     const loadNotifications = async () =>{
-      const data = await fetchData('http://localhost:5173/notifications.json');
-      setNotifications(data.notificationsList)
+      const response = await fetchData('http://localhost:5173/notifications.json');
+      setNotifications(response.data.notificationsList)
     }
     loadNotifications()
   },[])
