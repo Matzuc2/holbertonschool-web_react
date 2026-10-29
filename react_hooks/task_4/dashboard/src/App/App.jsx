@@ -69,12 +69,12 @@ function App(props){
   }, []);
 
   const provider = useMemo(
-  () => ({
-    user,
-    logOut,
-  }),
-  [user, logOut]
-);
+    () => ({
+      user,
+      logOut,
+    }),
+    [user, logOut]
+  );
 
   return (
       <AppContext.Provider value={provider}>
