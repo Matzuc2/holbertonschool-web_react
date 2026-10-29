@@ -1,5 +1,4 @@
 import { memo } from "react"
-import React from "react"
 
 const NotificationItem = memo(function NotificationItem (props){
     const { type, html, value, markAsRead } = props
@@ -11,7 +10,5 @@ const NotificationItem = memo(function NotificationItem (props){
     )
 })
 
-NotificationItem.defaultProps = {
-    type: 'default',
-}
+
 export default NotificationItem

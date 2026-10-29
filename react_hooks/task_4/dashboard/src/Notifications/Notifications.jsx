@@ -1,5 +1,4 @@
 import NotificationItem from "./NotificationItem"
-import React from "react"
 import { memo } from "react"
 
 const Notifications = memo(function Notifications (props){
@@ -43,10 +42,5 @@ const Notifications = memo(function Notifications (props){
       )
 })
 
-
-Notifications.defaultProps = {
-  displayDrawer: false,
-  notifications: []
-}
 
 export default Notifications;

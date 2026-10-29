@@ -26,18 +26,15 @@ function Login (props){
 
     function handleEnableSubmit (data) {
 
-        console.log('im triggered')
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
         const isValid = data.email.trim() !=""
         && emailRegex.test(data.email)
             && data.password.trim() != ""
             && data.password.length >= 8
-        console.log(isValid)
         if(isValid) setEnableSubmit(true)
     }
 
     function handleLoginSubmit (event) {
-        console.log(event)
         event.preventDefault();
         props.logIn(formData.email, formData.password)
     }
