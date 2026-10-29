@@ -19,8 +19,8 @@ const initialCourses = [
   { id: 3, name: 'React', credit: 40 },
 ];
 
-const isTestEnvironment =
-  typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+const isJestEnvironment =
+  typeof process !== 'undefined' && process.env.JEST_WORKER_ID !== undefined;
 
 function App(){
   const ContextProvider = AppContext.Provider
@@ -47,12 +47,12 @@ function App(){
   } 
 
   useEffect(() => {
-    if (isTestEnvironment) {
+    if (isJestEnvironment) {
       return;
     }
 
     const loadCourses = async () => {
-        const response = await fetchData('/courses.json');
+        const response = await fetchData('http://localhost:5173/courses.json');
         if (response) {
           setCourses(response.data.courses);
         }
@@ -62,8 +62,12 @@ function App(){
 
   
   useEffect(() => {
+    if (isJestEnvironment) {
+      return;
+    }
+
     const loadNotifications = async () =>{
-      const response = await fetchData('/notifications.json');
+      const response = await fetchData('http://localhost:5173/notifications.json');
       if (response) {
         setNotifications(response.data.notificationsList);
       }

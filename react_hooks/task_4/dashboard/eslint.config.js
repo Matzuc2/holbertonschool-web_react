@@ -21,5 +21,11 @@ export default defineConfig([
       },
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      'react-refresh/only-export-components': [
+        'error',
+        { extraHOCs: ['WithLogging'] },
+      ],
+    },
   },
 ])
