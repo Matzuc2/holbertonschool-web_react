@@ -6,7 +6,7 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useContext, useState,useMemo, useEffect } from 'react';
+import { useContext, useState,useMemo, useEffect, useCallback } from 'react';
 import AppContext from '../Context/context';
 import axios from 'axios';
 import { getLatestNotification } from '../utils/utils'
@@ -62,7 +62,7 @@ function App(){
   },[])
   
 
-  const logIn = React.useCallback((email, password) => {
+  const logIn = useCallback((email, password) => {
     setUser({
       email,
       password,
@@ -70,7 +70,7 @@ function App(){
     });
   }, [])
 
-  const logOut = React.useCallback(() => {
+  const logOut = useCallback(() => {
     setUser({
       email: '',
       password: '',
@@ -78,7 +78,7 @@ function App(){
     });
   }, [])
 
-  const markNotificationAsRead = React.useCallback((id) => {
+  const markNotificationAsRead = useCallback((id) => {
     
     setNotifications(previousNotifications =>
       previousNotifications.filter(
@@ -88,11 +88,11 @@ function App(){
     console.log(`Notification ${id} has been marked as read`);
   }, [])
 
-  const handleDisplayDrawer = React.useCallback(() => {
+  const handleDisplayDrawer = useCallback(() => {
     setDisplayDrawer(true);
   }, []);
 
-  const handleHideDrawer = React.useCallback(() => {
+  const handleHideDrawer = useCallback(() => {
     setDisplayDrawer(false);
   }, []);
 
