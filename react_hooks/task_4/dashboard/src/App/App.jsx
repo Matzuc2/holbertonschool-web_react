@@ -6,7 +6,7 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useContext, useState,useMemo, useEffect } from 'react';
+import React, { useContext, useState,useMemo, useEffect, useCallback } from 'react';
 import AppContext from '../Context/context';
 import axios from 'axios';
 import { getLatestNotification } from '../utils/utils'
@@ -43,7 +43,9 @@ function App(props){
   useEffect(() => {
     const loadCourses = async () => {
         const response = await fetchData('http://localhost:5173/courses.json');
-        setCourses(response.data.courses);
+        if (response) {
+          setCourses(response.data.courses);
+        }
       }
       loadCourses();
   }, [user])
@@ -52,27 +54,29 @@ function App(props){
   useEffect(() => {
     const loadNotifications = async () =>{
       const response = await fetchData('http://localhost:5173/notifications.json');
-      setNotifications(response.data.notificationsList)
+      if (response) {
+        setNotifications(response.data.notificationsList);
+      }
     }
     loadNotifications()
   },[])
   
 
-  const logIn = (email, password) => {
+  const logIn = React.useCallback((email, password) => {
     setUser({
       email,
       password,
       isLoggedIn: true,
     });
-  }
+  }, [])
 
-  const logOut = () => {
+  const logOut = React.useCallback(() => {
     setUser({
       email: '',
       password: '',
       isLoggedIn: false,
     });
-  }
+  }, [])
 
   const markNotificationAsRead = React.useCallback((id) => {
     
