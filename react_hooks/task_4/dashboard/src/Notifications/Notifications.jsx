@@ -30,7 +30,6 @@ const Notifications = memo(function Notifications (props){
               <ul className="list-inside list-disc space-y-2 p-0 min-[912px]:space-y-0">
                 {notifications.map((notification) => (
                     <NotificationItem
-                      key={notification.id}
                       id={notification.id}
                       type={notification.type}
                       html={notification.html}

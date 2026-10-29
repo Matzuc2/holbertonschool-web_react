@@ -83,4 +83,5 @@ describe('App', () => {
     fireEvent.click(screen.getByText('Your Notifications'))
     expect(screen.getByText('Here is the list of notifications')).toBeInTheDocument()
   })
+
 })
