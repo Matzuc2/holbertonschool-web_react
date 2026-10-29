@@ -6,7 +6,7 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useContext, useState,useMemo, useEffect, useCallback } from 'react';
+import React, { useContext, useState,useMemo, useEffect } from 'react';
 import AppContext from '../Context/context';
 import axios from 'axios';
 import { getLatestNotification } from '../utils/utils'
@@ -14,7 +14,7 @@ import { getLatestNotification } from '../utils/utils'
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
-function App(props){
+function App(){
 
   const context = useContext(AppContext)
   const userContext = context.user
