@@ -54,7 +54,7 @@ function App(props){
     
     setNotifications((previousNotifications) =>
       previousNotifications.filter(
-        (notification) => notification.id !== id
+        (notification) => notification.id != id
       )
     );
     console.log(`Notification ${id} has been marked as read`);
