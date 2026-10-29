@@ -6,8 +6,10 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useContext, useState,useMemo } from 'react';
+import React, { useContext, useState,useMemo, useEffect } from 'react';
 import AppContext from '../Context/context';
+import axios from 'axios';
+import { getLatestNotification } from '../utils/utils'
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
@@ -16,22 +18,44 @@ function App(props){
 
   const context = useContext(AppContext)
   const userContext = context.user
-  const notificationsList = [
-      { id: 1, type: 'default', value: 'New course available' },
-      { id: 2, type: 'urgent', value: 'New resume available' },
-      { id: 3, type: 'urgent', value: 'New data available' },
-  ]
 
-  const coursesList = [
-      { id: 1, name: "ES6", credit: 60 },
-      { id: 2, name: "Webpack", credit: "40" },
-      { id: 3, name: "React", credit: "20" },
+  const notificationsList = [
+    { id: 1, type: 'default', value: 'New course available' },
+    { id: 2, type: 'urgent', value: 'New resume available' },
+    { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
   ]
 
 
   const [displayDrawer, setDisplayDrawer] = useState(true);
   const [user, setUser] = useState(userContext)
   const [notifications, setNotifications] = useState(notificationsList)
+  const [courses, setCourses] = useState([])
+
+  async function fetchData(url) {
+    try {
+      const response = await axios.get(url);
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  } 
+
+  useEffect(() => {
+    const loadCourses = async () => {
+        const response = await fetchData('http://localhost:5173/courses.json');
+        setCourses(response.data.courses);
+      }
+      loadCourses();
+  }, [user])
+
+  
+  useEffect(() => {
+    const loadNotifications = async () =>{
+      const data = await fetchData('http://localhost:5173/notifications.json');
+      setNotifications(data.notificationsList)
+    }
+    loadNotifications()
+  },[])
   
 
   const logIn = (email, password) => {
@@ -91,7 +115,7 @@ function App(props){
           <Header />
           {user.isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
-              <CourseListWithLogging courses={coursesList} />
+              <CourseListWithLogging courses={courses} />
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom title="Log in to continue">
