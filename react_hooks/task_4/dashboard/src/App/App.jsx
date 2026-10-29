@@ -51,13 +51,13 @@ function App(props){
   }, [])
 
   const markNotificationAsRead = React.useCallback((id) => {
-    console.log(`Notification ${id} has been marked as read`);
-
+    
     setNotifications((previousNotifications) =>
       previousNotifications.filter(
         (notification) => notification.id !== id
       )
     );
+    console.log(`Notification ${id} has been marked as read`);
   }, [])
 
   const handleDisplayDrawer = React.useCallback(() => {
