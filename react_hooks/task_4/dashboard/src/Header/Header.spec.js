@@ -1,57 +1,75 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import Header from './Header'
-import AppContext from '../Context/context'
+import newContext from '../Context/context'
 
-test('renders School Dashboard h1', () => {
-  render(<Header />)
-  const h1 = screen.getByRole('heading', { name: /School dashboard/i })
-  const image = screen.getByAltText(/Holberton logo/i)
-  expect(image).toBeInTheDocument()
-  expect(h1).toBeInTheDocument()
-})
+// Capitalised so ESLint, without a React plugin, sees its JSX usage.
+const ContextProvider = newContext.Provider
 
-test('does not render the logout section with the default context value', () => {
-  render(<Header />)
+const loggedInUser = {
+  email: 'user@example.com',
+  password: 'secret-password',
+  isLoggedIn: true,
+}
 
-  expect(screen.queryByText(/logout/i)).not.toBeInTheDocument()
-  expect(screen.queryByText(/welcome/i)).not.toBeInTheDocument()
-})
-
-test('renders the logout section for a logged-in user', () => {
-  const user = {
-    email: 'student@example.com',
-    password: 'password123',
-    isLoggedIn: true,
-  }
-
+// Renders the Header under a Provider, as App does once a user has logged in.
+const renderLoggedIn = (logOut = () => {}) =>
   render(
-    <AppContext.Provider value={{ user, logOut: jest.fn() }}>
+    <ContextProvider value={{ user: loggedInUser, logOut }}>
       <Header />
-    </AppContext.Provider>
+    </ContextProvider>
   )
 
-  expect(screen.getByText('Welcome student@example.com')).toBeInTheDocument()
-  const logoutSection = screen.getByText(/logout/i).parentElement
+describe('Header', () => {
+  test('is a function component', () => {
+    expect(typeof Header).toBe('function')
+    expect(Header.prototype?.isReactComponent).toBeUndefined()
+  })
 
-  expect(screen.getByText(/logout/i)).toBeInTheDocument()
-  expect(logoutSection).toHaveAttribute('id', 'logoutSection')
-})
+  test('renders the Holberton logo', () => {
+    const { container } = render(<Header />)
+    const images = Array.from(container.querySelectorAll('img'))
 
-test('calls the context logOut function when the logout link is clicked', () => {
-  const logOut = jest.fn()
-  const user = {
-    email: 'student@example.com',
-    password: 'password123',
-    isLoggedIn: true,
-  }
+    // The logo is identified by its alt text or its source, so the assertion
+    // survives a component that words the alt attribute differently.
+    const logo = images.find((image) =>
+      /holberton/i.test(`${image.getAttribute('alt')} ${image.getAttribute('src')}`)
+    )
 
-  render(
-    <AppContext.Provider value={{ user, logOut }}>
-      <Header />
-    </AppContext.Provider>
-  )
+    expect(logo).toBeDefined()
+    expect(logo).toBeInTheDocument()
+  })
 
-  fireEvent.click(screen.getByText(/logout/i))
+  test('renders an h1 with the text School dashboard', () => {
+    render(<Header />)
 
-  expect(logOut).toHaveBeenCalledTimes(1)
+    expect(
+      screen.getByRole('heading', { level: 1, name: /school dashboard/i })
+    ).toBeInTheDocument()
+  })
+
+  describe('the logout section', () => {
+    test('is not rendered with the default context value', () => {
+      const { container } = render(<Header />)
+
+      expect(container.querySelector('#logoutSection')).toBeNull()
+    })
+
+    test('is rendered when the user in the context is logged in', () => {
+      const { container } = renderLoggedIn()
+      const section = container.querySelector('#logoutSection')
+
+      expect(section).toBeInTheDocument()
+      expect(section).toHaveTextContent(/welcome user@example\.com/i)
+      expect(screen.getByText(/^logout$/i)).toBeInTheDocument()
+    })
+
+    test('calls the logOut function of the context when logout is clicked', () => {
+      const logOut = jest.fn()
+      renderLoggedIn(logOut)
+
+      fireEvent.click(screen.getByText(/^logout$/i))
+
+      expect(logOut).toHaveBeenCalledTimes(1)
+    })
+  })
 })

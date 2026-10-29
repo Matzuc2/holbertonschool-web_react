@@ -1,6 +1,6 @@
 import React from 'react';
 
-const user = {
+export const user = {
     email: '',
     password: '',
     isLoggedIn: false

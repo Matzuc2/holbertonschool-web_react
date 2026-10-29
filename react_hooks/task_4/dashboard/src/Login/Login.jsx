@@ -1,8 +1,9 @@
 import { Fragment } from 'react';
 import { useState } from 'react';
+import WithLogging from '../HOC/WithLogging';
 
 
-function Login (props){
+function Login ({ logIn = () => {} }){
     const [enableSubmit, setEnableSubmit] = useState(false)
     const [formData, setFormData] = useState({ email: '', password: ''})
     
@@ -31,12 +32,12 @@ function Login (props){
         && emailRegex.test(data.email)
             && data.password.trim() != ""
             && data.password.length >= 8
-        if(isValid) setEnableSubmit(true)
+        setEnableSubmit(isValid)
     }
 
     function handleLoginSubmit (event) {
         event.preventDefault();
-        props.logIn(formData.email, formData.password)
+        logIn(formData.email, formData.password)
     }
 
 
@@ -76,4 +77,4 @@ function Login (props){
 
 }
 
-export default Login;
+export default WithLogging(Login);

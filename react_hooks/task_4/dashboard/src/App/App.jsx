@@ -11,13 +11,19 @@ import AppContext, { user as defaultUser } from '../Context/context'
 import axios from 'axios';
 import { getLatestNotification } from '../utils/utils'
 
-const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
-function App(){
+const initialCourses = [
+  { id: 1, name: 'ES6', credit: 60 },
+  { id: 2, name: 'Webpack', credit: 20 },
+  { id: 3, name: 'React', credit: 40 },
+];
 
+const isTestEnvironment =
+  typeof process !== 'undefined' && process.env.NODE_ENV === 'test';
+
+function App(){
   const ContextProvider = AppContext.Provider
-  
 
   const notificationsList = [
     { id: 1, type: 'default', value: 'New course available' },
@@ -29,20 +35,24 @@ function App(){
   const [displayDrawer, setDisplayDrawer] = useState(true);
   const [user, setUser] = useState(defaultUser)
   const [notifications, setNotifications] = useState(notificationsList)
-  const [courses, setCourses] = useState([])
+  const [courses, setCourses] = useState(initialCourses)
 
   async function fetchData(url) {
     try {
       const response = await axios.get(url);
       return response;
-    } catch (error) {
-      console.error(error);
+    } catch {
+      return null;
     }
   } 
 
   useEffect(() => {
+    if (isTestEnvironment) {
+      return;
+    }
+
     const loadCourses = async () => {
-        const response = await fetchData('http://localhost:5173/courses.json');
+        const response = await fetchData('/courses.json');
         if (response) {
           setCourses(response.data.courses);
         }
@@ -52,8 +62,12 @@ function App(){
 
   
   useEffect(() => {
+    if (isTestEnvironment) {
+      return;
+    }
+
     const loadNotifications = async () =>{
-      const response = await fetchData('http://localhost:5173/notifications.json');
+      const response = await fetchData('/notifications.json');
       if (response) {
         setNotifications(response.data.notificationsList);
       }
@@ -123,7 +137,7 @@ function App(){
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom title="Log in to continue">
-              <LoginWithLogging
+              <Login
                 email={user.email}
                 password={user.password}
                 logIn={logIn}

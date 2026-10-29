@@ -47,7 +47,13 @@ const Notifications = memo(function Notifications (props){
           }
         </div>
       )
-})
+}, (previousProps, nextProps) =>
+  previousProps.displayDrawer === nextProps.displayDrawer
+  && previousProps.notifications === nextProps.notifications
+  && previousProps.handleDisplayDrawer === nextProps.handleDisplayDrawer
+  && previousProps.handleHideDrawer === nextProps.handleHideDrawer
+  && previousProps.markNotificationAsRead === nextProps.markNotificationAsRead
+)
 
 
 export default Notifications;

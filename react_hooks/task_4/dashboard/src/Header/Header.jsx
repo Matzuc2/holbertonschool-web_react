@@ -20,7 +20,7 @@ function Header (){
                     onClick={logOut}
                     className="cursor-pointer text-blue-600 underline"
                   >
-                    (logout)
+                    logout
                   </a>
                 </div>
               )
