@@ -62,10 +62,6 @@ function App(){
 
   
   useEffect(() => {
-    if (isTestEnvironment) {
-      return;
-    }
-
     const loadNotifications = async () =>{
       const response = await fetchData('/notifications.json');
       if (response) {
