@@ -6,7 +6,7 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useCallback, useContext, useState,useMemo } from 'react';
+import React, { useContext, useState,useMemo } from 'react';
 import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
