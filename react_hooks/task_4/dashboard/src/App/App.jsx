@@ -94,7 +94,7 @@ function App(props){
               <CourseListWithLogging courses={coursesList} />
             </BodySectionWithMarginBottom>
           ) : (
-            <BodySectionWithMarginBottom>
+            <BodySectionWithMarginBottom title="Log in to continue">
               <LoginWithLogging
                 email={user.email}
                 password={user.password}

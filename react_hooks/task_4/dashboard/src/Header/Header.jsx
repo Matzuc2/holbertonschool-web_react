@@ -28,13 +28,6 @@ function Header (){
             
          </header>
         </div>
-        <div>
-          {user.isLoggedIn === false && (
-            <div>
-              <p style={{fontWeight: 'bold'}}>Login to continue</p>
-            </div>
-          )}
-        </div>
    </>
    )
 }
