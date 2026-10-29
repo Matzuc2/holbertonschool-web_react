@@ -61,14 +61,11 @@ function App(props){
   }, [])
 
   const handleDisplayDrawer = useCallback(() => {
-    setDisplayDrawer({
-      displayDrawer: true,
-    }), []})
+    setDisplayDrawer(true);
+  }, [])
 
   const handleHideDrawer = useCallback(() => {
-    setDisplayDrawer({
-      displayDrawer: false,
-    }), []
+    setDisplayDrawer(false);
   }, [])
 
   const provider = {
