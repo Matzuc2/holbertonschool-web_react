@@ -15,7 +15,7 @@ function Header (){
               (
                 <div id='logoutSection'>
                   <p>Welcome {user.email}</p>
-                  <a onClick={logOut}>Logout</a>
+                  <a href="#logout" onClick={logOut}>(logout)</a>
                 </div>
               )
             }
