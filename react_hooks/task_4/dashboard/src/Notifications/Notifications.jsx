@@ -28,9 +28,16 @@ const Notifications = memo(function Notifications (props){
                 </button>
                 <p>Here is the list of notifications</p>
               <ul className="list-inside list-disc space-y-2 p-0 min-[912px]:space-y-0">
-                {notifications.map((notification)=>{
-                  return <NotificationItem key={notification.id} type={notification.type} html={notification.html} value={notification.value} markAsRead={() => markNotificationAsRead(notification.id)} />
-                })}
+                {notifications.map((notification) => (
+                    <NotificationItem
+                      key={notification.id}
+                      id={notification.id}
+                      type={notification.type}
+                      html={notification.html}
+                      value={notification.value}
+                      markAsRead={markNotificationAsRead}
+                    />
+                  ))}
               </ul>
               </>
             :
