@@ -89,9 +89,6 @@ function App(props){
             />
           </div>
           <Header />
-          <BodySection title="News from the School">
-            <p>Holberton School News goes here</p>
-          </BodySection>
           {user.isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
               <CourseListWithLogging courses={coursesList} />
@@ -105,6 +102,9 @@ function App(props){
               />
             </BodySectionWithMarginBottom>
           )}
+          <BodySection title="News from the School">
+            <p>Holberton School News goes here</p>
+          </BodySection>
           <Footer />
         </div>
       </AppContext.Provider>
