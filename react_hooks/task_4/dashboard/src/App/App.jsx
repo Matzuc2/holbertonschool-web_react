@@ -34,21 +34,21 @@ function App(props){
   const [notifications, setNotifications] = useState(notificationsList)
   
 
-  const logIn = useCallback((email, password) => {
+  const logIn = (email, password) => {
     setUser({
       email,
       password,
       isLoggedIn: true,
     });
-  }, [])
+  }
 
-  const logOut = useCallback(() => {
+  const logOut = () => {
     setUser({
       email: '',
       password: '',
       isLoggedIn: false,
     });
-  }, [])
+  }
 
   const markNotificationAsRead = React.useCallback((id) => {
     
