@@ -6,8 +6,8 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import { useContext, useState,useMemo, useEffect, useCallback } from 'react';
-import AppContext from '../Context/context';
+import { useState,useMemo, useEffect, useCallback } from 'react';
+import AppContext, { user as defaultUser } from '../Context/context'
 import axios from 'axios';
 import { getLatestNotification } from '../utils/utils'
 
@@ -16,8 +16,8 @@ const CourseListWithLogging = WithLogging(CourseList);
 
 function App(){
 
-  const context = useContext(AppContext)
-  const userContext = context.user
+  const ContextProvider = AppContext.Provider
+  
 
   const notificationsList = [
     { id: 1, type: 'default', value: 'New course available' },
@@ -27,7 +27,7 @@ function App(){
 
 
   const [displayDrawer, setDisplayDrawer] = useState(true);
-  const [user, setUser] = useState(userContext)
+  const [user, setUser] = useState(defaultUser)
   const [notifications, setNotifications] = useState(notificationsList)
   const [courses, setCourses] = useState([])
 
@@ -105,7 +105,7 @@ function App(){
   );
 
   return (
-      <AppContext.Provider value={provider}>
+      <ContextProvider value={provider}>
         <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className="root-notifications">
             <Notifications
@@ -140,7 +140,7 @@ function App(){
           </BodySection>
           <Footer />
         </div>
-      </AppContext.Provider>
+      </ContextProvider>
     )
 
 }
