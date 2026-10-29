@@ -9,13 +9,6 @@ jest.mock('../CourseList/CourseList', () => jest.fn(() => null))
 describe('App', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    jest.spyOn(console, 'warn').mockImplementation(() => {})
-  })
-
-  afterEach(() => {
-    jest.restoreAllMocks()
   })
 
   test('renders the login component by default', () => {
@@ -61,18 +54,24 @@ describe('App', () => {
 
 
   test('removes a notification and logs when it is marked as read', () => {
-    render(<App />)
-    fireEvent.click(screen.getByText('Your Notifications'))
-    expect(screen.getByText('New resume available')).toBeInTheDocument()
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
 
-    fireEvent.click(screen.getByText('New resume available'))
+    try {
+      render(<App />)
+      fireEvent.click(screen.getByText('Your Notifications'))
+      expect(screen.getByText('New resume available')).toBeInTheDocument()
 
-    expect(console.log).toHaveBeenCalledWith(
-      'Notification 2 has been marked as read'
-    )
-    expect(screen.queryByText('New resume available')).not.toBeInTheDocument()
-    expect(screen.getByText('New course available')).toBeInTheDocument()
-    expect(screen.getByText('New data available')).toBeInTheDocument()
+      fireEvent.click(screen.getByText('New resume available'))
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Notification 2 has been marked as read'
+      )
+      expect(screen.queryByText('New resume available')).not.toBeInTheDocument()
+      expect(screen.getByText('New course available')).toBeInTheDocument()
+      expect(screen.getByText('New data available')).toBeInTheDocument()
+    } finally {
+      consoleSpy.mockRestore()
+    }
   })
 
   test('opens and closes the notification drawer', () => {
