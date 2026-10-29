@@ -14,7 +14,7 @@ function Header (){
               user.isLoggedIn &&
               (
                 <div id='logoutSection'>
-                  <p>Welcome <b>{user.email}</b></p>
+                  <p>Welcome {user.email}</p>
                   <a
                     href="#logout"
                     onClick={logOut}
