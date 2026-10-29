@@ -6,7 +6,7 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { use, useCallback, useState, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
@@ -28,38 +28,36 @@ function App(props){
   ]
 
 
-  const [displayDrawer, setDisplayDrawer] = useState(false);
+  const [displayDrawer, setDisplayDrawer] = useState(true);
   const [user, setUser] = useState(context.user)
   const [notifications, setNotifications] = useState(notificationsList)
   const [courses, setCourses] = useState(coursesList)
 
   const logIn = useCallback((email, password) => {
     setUser({
-        email,
-        password,
-        isLoggedIn: true,
-      })
-    }, [])
+      email,
+      password,
+      isLoggedIn: true,
+    });
+  }, [])
 
   const logOut = useCallback(() => {
     setUser({
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      })
-    }, [])
-
-
+      email: '',
+      password: '',
+      isLoggedIn: false,
+    });
+  }, [])
 
   const markNotificationAsRead = useCallback((id) => {
-    console.log(`Notification ${id} has been marked as read`)
+    console.log(`Notification ${id} has been marked as read`);
 
     setNotifications((previousNotifications) =>
       previousNotifications.filter(
         (notification) => notification.id !== id
       )
     );
-  }, []);
+  }, [])
 
   const handleDisplayDrawer = useCallback(() => {
     setDisplayDrawer(true);
