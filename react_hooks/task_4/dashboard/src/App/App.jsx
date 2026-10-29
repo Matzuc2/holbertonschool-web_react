@@ -6,19 +6,15 @@ import CourseList from '../CourseList/CourseList';
 import BodySection from '../BodySection/BodySection';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import WithLogging from '../HOC/WithLogging';
-import React, { useCallback, useState } from 'react';
+import React, { use, useCallback, useState, useContext } from 'react';
 import AppContext from '../Context/context';
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
 
 function App(props){
-  const user = {
-      email: '',
-      password: '',
-      isLoggedIn: false
-  }
 
+  const context = useContext(AppContext)
   const notificationsList = [
       { id: 1, type: 'default', value: 'New course available' },
       { id: 2, type: 'urgent', value: 'New resume available' },
@@ -31,63 +27,52 @@ function App(props){
       { id: 3, name: "React", credit: "20" },
   ]
 
-  const [state, setState] = useState({
-      displayDrawer: false,
-      user: user,
-      notifications: notificationsList,
-      courses: coursesList
-  })
 
+  const [displayDrawer, setDisplayDrawer] = useState(false);
+  const [user, setUser] = useState(context.user)
+  const [notifications, setNotifications] = useState(notificationsList)
+  const [courses, setCourses] = useState(coursesList)
 
   const logIn = useCallback((email, password) => {
-    setState((prevState) => ({
-      ...prevState,
-      user: {
+    setUser({
         email,
         password,
         isLoggedIn: true,
-      },
-    }))
-  }, [])
+      })
+    }, [])
 
   const logOut = useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
-      user: {
+    setUser({
         email: '',
         password: '',
         isLoggedIn: false,
-      },
-    }))
-  }, [])
+      })
+    }, [])
+
 
   const markNotificationAsRead = useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`)
 
-    setState((prevState) => ({
-        ...prevState,
-        notifications: prevState.notifications.filter(
+    setNotifications((prevState) => ({
+        notifications: prevState.filter(
           (notification) => notification.id !== id
         ),
       }))
   }, [])
 
   const handleDisplayDrawer = useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
+    setDisplayDrawer({
       displayDrawer: true,
-    }))
-  }, [])
+    }), []})
 
   const handleHideDrawer = useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
+    setDisplayDrawer({
       displayDrawer: false,
-    }))
+    }), []
   }, [])
 
   const provider = {
-    user: state.user,
+    user: user,
     logOut,
   }
 
@@ -96,8 +81,8 @@ function App(props){
         <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
           <div className="root-notifications">
             <Notifications
-              displayDrawer={state.displayDrawer}
-              notifications={state.notifications}
+              displayDrawer={displayDrawer}
+              notifications={notifications}
               markNotificationAsRead={markNotificationAsRead}
               handleDisplayDrawer={handleDisplayDrawer}
               handleHideDrawer={handleHideDrawer}
@@ -107,15 +92,15 @@ function App(props){
           <BodySection title="News from the School">
             <p>Holberton School News goes here</p>
           </BodySection>
-          {state.user.isLoggedIn ? (
+          {user.isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
-              <CourseListWithLogging courses={state.courses} />
+              <CourseListWithLogging courses={courses} />
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom>
               <LoginWithLogging
-                email={state.user.email}
-                password={state.user.password}
+                email={user.email}
+                password={user.password}
                 logIn={logIn}
               />
             </BodySectionWithMarginBottom>
