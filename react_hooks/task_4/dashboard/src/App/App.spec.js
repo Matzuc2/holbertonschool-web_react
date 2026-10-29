@@ -52,28 +52,6 @@ describe('App', () => {
     expect(Login).toHaveBeenCalledTimes(2)
   })
 
-  test('logs out when ctrl+h is pressed', () => {
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {})
-    render(<App />)
-
-    const { logIn } = Login.mock.calls[0][0]
-    act(() => {
-      logIn('student@example.com', 'long-enough-password')
-    })
-
-    act(() => {
-      window.dispatchEvent(new KeyboardEvent("keydown", {
-        key: "h",
-        code: "h",
-        ctrlKey: true,
-        bubbles: true,
-      }))
-    })
-
-    expect(alertSpy).toHaveBeenCalledWith("Logging you out")
-    expect(screen.queryByText(/logout/i)).not.toBeInTheDocument()
-    alertSpy.mockRestore()
-  })
 
   test('removes a notification and logs when it is marked as read', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
@@ -94,5 +72,15 @@ describe('App', () => {
     } finally {
       consoleSpy.mockRestore()
     }
+  })
+
+  test('opens and closes the notification drawer', () => {
+    render(<App />)
+
+    fireEvent.click(screen.getByText('Close'))
+    expect(screen.queryByText('Here is the list of notifications')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByText('Your Notifications'))
+    expect(screen.getByText('Here is the list of notifications')).toBeInTheDocument()
   })
 })

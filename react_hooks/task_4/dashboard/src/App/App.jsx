@@ -15,6 +15,7 @@ const CourseListWithLogging = WithLogging(CourseList);
 function App(props){
 
   const context = useContext(AppContext)
+  const userContext = context.user
   const notificationsList = [
       { id: 1, type: 'default', value: 'New course available' },
       { id: 2, type: 'urgent', value: 'New resume available' },
@@ -29,9 +30,9 @@ function App(props){
 
 
   const [displayDrawer, setDisplayDrawer] = useState(true);
-  const [user, setUser] = useState(context.user)
+  const [user, setUser] = useState(userContext)
   const [notifications, setNotifications] = useState(notificationsList)
-  const [courses, setCourses] = useState(coursesList)
+  
 
   const logIn = useCallback((email, password) => {
     setUser({
@@ -93,7 +94,7 @@ function App(props){
           </BodySection>
           {user.isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
-              <CourseListWithLogging courses={courses} />
+              <CourseListWithLogging courses={coursesList} />
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom>
