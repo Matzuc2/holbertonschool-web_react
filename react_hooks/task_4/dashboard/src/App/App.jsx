@@ -50,15 +50,16 @@ function App(props){
     }, [])
 
 
+
   const markNotificationAsRead = useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`)
 
-    setNotifications((prevState) => ({
-        notifications: prevState.filter(
-          (notification) => notification.id !== id
-        ),
-      }))
-  }, [])
+    setNotifications((previousNotifications) =>
+      previousNotifications.filter(
+        (notification) => notification.id !== id
+      )
+    );
+  }, []);
 
   const handleDisplayDrawer = useCallback(() => {
     setDisplayDrawer(true);
