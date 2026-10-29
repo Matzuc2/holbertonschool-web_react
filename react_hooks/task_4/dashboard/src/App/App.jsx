@@ -50,7 +50,7 @@ function App(props){
     });
   }, [])
 
-  const markNotificationAsRead = useCallback((id) => {
+  const markNotificationAsRead = React.useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`);
 
     setNotifications((previousNotifications) =>
