@@ -25,9 +25,6 @@ const initialNotifications = [
   { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
 ]
 
-const isJestEnvironment =
-  typeof process !== 'undefined' && process.env.JEST_WORKER_ID !== undefined
-
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
   const { displayDrawer, user, notifications, courses } = state
@@ -41,33 +38,12 @@ function App() {
   }, [])
 
   useEffect(() => {
-    dispatch({ type: APP_ACTIONS.SET_COURSES, payload: initialCourses })
-
-    if (isJestEnvironment) {
-      return
-    }
-
-    fetchData('http://localhost:5173/courses.json').then((response) => {
-      if (response) {
-        dispatch({
-          type: APP_ACTIONS.SET_COURSES,
-          payload: response.data.courses,
-        })
-      }
-    })
-  }, [fetchData])
-
-  useEffect(() => {
     dispatch({
       type: APP_ACTIONS.SET_NOTIFICATIONS,
       payload: initialNotifications,
     })
 
-    if (isJestEnvironment) {
-      return
-    }
-
-    fetchData('http://localhost:5173/notifications.json').then((response) => {
+    fetchData('/notifications.json').then((response) => {
       if (response) {
         dispatch({
           type: APP_ACTIONS.SET_NOTIFICATIONS,
@@ -76,6 +52,22 @@ function App() {
       }
     })
   }, [fetchData])
+
+  useEffect(() => {
+    if (!user.isLoggedIn) {
+      return
+    }
+
+    dispatch({ type: APP_ACTIONS.SET_COURSES, payload: initialCourses })
+    fetchData('/courses.json').then((response) => {
+      if (response) {
+        dispatch({
+          type: APP_ACTIONS.SET_COURSES,
+          payload: response.data.courses,
+        })
+      }
+    })
+  }, [fetchData, user.isLoggedIn])
 
   const logIn = useCallback((email, password) => {
     dispatch({
