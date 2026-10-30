@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 
-export function useLogin(onLogin) {
+function useLogin(onLogin) {
     const [enableSubmit, setEnableSubmit] = useState(false)
     const [formData, setFormData] = useState({ email: '', password: ''})
         
@@ -49,3 +49,5 @@ export function useLogin(onLogin) {
         handleLoginSubmit: handleLoginSubmit
     }
 }
+
+export default useLogin;
