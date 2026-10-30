@@ -13,61 +13,74 @@ import { APP_ACTIONS, appReducer, initialState } from './appReducer'
 
 const CourseListWithLogging = WithLogging(CourseList)
 
-const initialCourses = [
-  { id: 1, name: 'ES6', credit: 60 },
-  { id: 2, name: 'Webpack', credit: 20 },
-  { id: 3, name: 'React', credit: 40 },
-]
-
-const initialNotifications = [
-  { id: 1, type: 'default', value: 'New course available' },
-  { id: 2, type: 'urgent', value: 'New resume available' },
-  { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
-]
-
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
   const { displayDrawer, user, notifications, courses } = state
 
-  const fetchData = useCallback(async (url) => {
-    try {
-      return await axios.get(url)
-    } catch {
-      return null
-    }
-  }, [])
-
   useEffect(() => {
-    dispatch({
-      type: APP_ACTIONS.SET_NOTIFICATIONS,
-      payload: initialNotifications,
-    })
+    let isMounted = true
 
-    fetchData('/notifications.json').then((response) => {
-      if (response) {
+    axios
+      .get('http://localhost:5173/notifications.json')
+      .then((response) => {
+        if (!isMounted) {
+          return
+        }
+
+        const notifications = response.data.notifications.map((notification) =>
+          notification.id === 3
+            ? {
+                ...notification,
+                html: { __html: getLatestNotification() },
+              }
+            : notification
+        )
+
         dispatch({
           type: APP_ACTIONS.SET_NOTIFICATIONS,
-          payload: response.data.notificationsList,
+          payload: notifications,
         })
-      }
-    })
-  }, [fetchData])
+      })
+      .catch((error) => {
+        if (isMounted) {
+          console.error('Error fetching notifications', error)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   useEffect(() => {
     if (!user.isLoggedIn) {
       return
     }
 
-    dispatch({ type: APP_ACTIONS.SET_COURSES, payload: initialCourses })
-    fetchData('/courses.json').then((response) => {
-      if (response) {
+    let isMounted = true
+
+    axios
+      .get('http://localhost:5173/courses.json')
+      .then((response) => {
+        if (!isMounted) {
+          return
+        }
+
         dispatch({
           type: APP_ACTIONS.SET_COURSES,
           payload: response.data.courses,
         })
-      }
-    })
-  }, [fetchData, user.isLoggedIn])
+      })
+      .catch((error) => {
+        if (isMounted) {
+          console.error('Error fetching courses', error)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [user.isLoggedIn])
 
   const logIn = useCallback((email, password) => {
     dispatch({

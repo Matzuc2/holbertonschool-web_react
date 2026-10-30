@@ -1,9 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import Header from './Header'
-import newContext from '../Context/context'
 
-// Capitalised so ESLint, without a React plugin, sees its JSX usage.
-const ContextProvider = newContext.Provider
+const loggedOutUser = { email: '', password: '', isLoggedIn: false }
 
 const loggedInUser = {
   email: 'user@example.com',
@@ -11,13 +9,9 @@ const loggedInUser = {
   isLoggedIn: true,
 }
 
-// Renders the Header under a Provider, as App does once a user has logged in.
+// Renders the Header with the props App passes once a user has logged in.
 const renderLoggedIn = (logOut = () => {}) =>
-  render(
-    <ContextProvider value={{ user: loggedInUser, logOut }}>
-      <Header />
-    </ContextProvider>
-  )
+  render(<Header user={loggedInUser} logOut={logOut} />)
 
 describe('Header', () => {
   test('is a function component', () => {
@@ -26,7 +20,7 @@ describe('Header', () => {
   })
 
   test('renders the Holberton logo', () => {
-    const { container } = render(<Header />)
+    const { container } = render(<Header user={loggedOutUser} logOut={() => {}} />)
     const images = Array.from(container.querySelectorAll('img'))
 
     // The logo is identified by its alt text or its source, so the assertion
@@ -40,7 +34,7 @@ describe('Header', () => {
   })
 
   test('renders an h1 with the text School dashboard', () => {
-    render(<Header />)
+    render(<Header user={loggedOutUser} logOut={() => {}} />)
 
     expect(
       screen.getByRole('heading', { level: 1, name: /school dashboard/i })
@@ -48,8 +42,8 @@ describe('Header', () => {
   })
 
   describe('the logout section', () => {
-    test('is not rendered with the default context value', () => {
-      const { container } = render(<Header />)
+    test('is not rendered while the user is logged out', () => {
+      const { container } = render(<Header user={loggedOutUser} logOut={() => {}} />)
 
       expect(container.querySelector('#logoutSection')).toBeNull()
     })
@@ -71,5 +65,23 @@ describe('Header', () => {
 
       expect(logOut).toHaveBeenCalledTimes(1)
     })
+  })
+})
+
+describe('Header without props', () => {
+  // App always passes both props; rendering without them must still work.
+  test('renders the logo and the title, without the logout section', () => {
+    const { container } = render(<Header />)
+
+    expect(
+      screen.getByRole('heading', { level: 1, name: /school dashboard/i })
+    ).toBeInTheDocument()
+    expect(container.querySelector('#logoutSection')).toBeNull()
+  })
+
+  test('does not crash when logout is clicked without a logOut prop', () => {
+    render(<Header user={loggedInUser} />)
+
+    expect(() => fireEvent.click(screen.getByText(/^logout$/i))).not.toThrow()
   })
 })

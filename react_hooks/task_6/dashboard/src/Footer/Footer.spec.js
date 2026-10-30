@@ -1,17 +1,9 @@
 import { render, screen } from '@testing-library/react'
 import Footer from './Footer'
-import newContext from '../Context/context'
 import { getFooterCopy } from '../utils/utils'
 
-// Capitalised so ESLint, without a React plugin, sees its JSX usage.
-const ContextProvider = newContext.Provider
-
-const renderWithUser = (user) =>
-  render(
-    <ContextProvider value={{ user, logOut: () => {} }}>
-      <Footer />
-    </ContextProvider>
-  )
+// The user now comes from App through the `user` prop.
+const renderWithUser = (user) => render(<Footer user={user} />)
 
 describe('Footer', () => {
   test('getFooterCopy returns the index copy when isIndex is true', () => {
@@ -34,7 +26,7 @@ describe('Footer', () => {
   })
 
   describe('the Contact us link', () => {
-    test('is not displayed with the default context value', () => {
+    test('is not displayed without a user prop', () => {
       render(<Footer />)
 
       expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument()
@@ -58,7 +50,7 @@ describe('Footer', () => {
       expect(link.closest('p')).toBeInTheDocument()
     })
 
-    test('disappears once the user in the context logs out', () => {
+    test('disappears once the user prop switches to logged out', () => {
       const { rerender } = renderWithUser({
         email: 'user@example.com',
         password: 'secret-password',
@@ -66,14 +58,7 @@ describe('Footer', () => {
       })
 
       rerender(
-        <ContextProvider
-          value={{
-            user: { email: '', password: '', isLoggedIn: false },
-            logOut: () => {},
-          }}
-        >
-          <Footer />
-        </ContextProvider>
+        <Footer user={{ email: '', password: '', isLoggedIn: false }} />
       )
 
       expect(screen.queryByText(/contact us/i)).not.toBeInTheDocument()
