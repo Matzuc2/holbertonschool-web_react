@@ -21,13 +21,17 @@ export const initialState = {
 export function appReducer(state = initialState, action = {}) {
   switch (action.type) {
     case APP_ACTIONS.LOGIN:
+      {
+        const credentials = action.payload?.user || action.payload || action
+
       return {
         ...state,
         user: {
-          email: action.payload.email,
-          password: action.payload.password,
+          email: credentials.email,
+          password: credentials.password,
           isLoggedIn: true,
         },
+      }
       }
     case APP_ACTIONS.LOGOUT:
       return {
