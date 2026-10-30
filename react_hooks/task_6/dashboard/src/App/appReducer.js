@@ -23,7 +23,6 @@ export function appReducer(state = initialState, action = {}) {
     case APP_ACTIONS.LOGIN:
       {
         const credentials = action.payload?.user || action.payload || action
-
       return {
         ...state,
         user: {
@@ -34,13 +33,19 @@ export function appReducer(state = initialState, action = {}) {
       }
       }
     case APP_ACTIONS.LOGOUT:
+      {
+        const loggedOutUser = action.payload?.user || action.payload
+
       return {
         ...state,
-        user: {
-          email: '',
-          password: '',
-          isLoggedIn: false,
-        },
+        user: loggedOutUser
+          ? {
+              email: loggedOutUser.email || '',
+              password: loggedOutUser.password || '',
+              isLoggedIn: false,
+            }
+          : initialState.user,
+      }
       }
     case APP_ACTIONS.TOGGLE_DRAWER:
       return {
