@@ -7,50 +7,34 @@ export const APP_ACTIONS = {
   SET_COURSES: 'SET_COURSES',
 }
 
+const loggedOutUser = {
+  email: '',
+  password: '',
+  isLoggedIn: false,
+}
+
 export const initialState = {
   displayDrawer: true,
-  user: {
-    email: '',
-    password: '',
-    isLoggedIn: false,
-  },
+  user: loggedOutUser,
   notifications: [],
   courses: [],
 }
 
-export function appReducer(state = initialState, action = {}) {
+export function appReducer(state = initialState, action) {
   switch (action.type) {
     case APP_ACTIONS.LOGIN:
-      {
-        const credentials =
-          action.payload?.user || action.payload || action.user || action
-
-        return {
-          ...state,
-          user: {
-            email: credentials.email,
-            password: credentials.password,
-            isLoggedIn: true,
-          },
-        }
-      }
-    case APP_ACTIONS.LOGOUT:
       return {
         ...state,
         user: {
-          email: '',
-          password: '',
-          isLoggedIn: false,
+          email: action.payload.email,
+          password: action.payload.password,
+          isLoggedIn: true,
         },
       }
+    case APP_ACTIONS.LOGOUT:
+      return { ...state, user: loggedOutUser, courses: [] }
     case APP_ACTIONS.TOGGLE_DRAWER:
-      return {
-        ...state,
-        displayDrawer:
-          typeof action.payload === 'boolean'
-            ? action.payload
-            : !state.displayDrawer,
-      }
+      return { ...state, displayDrawer: !state.displayDrawer }
     case APP_ACTIONS.MARK_NOTIFICATION_READ:
       return {
         ...state,
@@ -72,3 +56,5 @@ export function appReducer(state = initialState, action = {}) {
       return state
   }
 }
+
+export default appReducer
