@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import WithLogging from '../HOC/WithLogging';
-import { useLogin } from '../hooks/useLogin';
+import useLogin from '../hooks/useLogin';
 
 
 function Login ({ logIn = () => {} }){
