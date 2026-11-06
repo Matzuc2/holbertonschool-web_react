@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useReducer } from 'react'
 import axios from 'axios'
-import Footer from './Footer/Footer'
-import Header from './Header/Header'
-import Login from './Login/Login'
+import Footer from './components/Footer/Footer'
+import Header from './components/Header/Header'
+import Login from './pages/Login/Login'
 import Notifications from './components/Notifications/Notifications'
-import CourseList from './CourseList/CourseList'
+import CourseList from './pages/CourseList/CourseList'
 import BodySection from './components/BodySection/BodySection'
-import BodySectionWithMarginBottom from './components/BodySection/BodySectionWithMarginBottom'
+import BodySectionWithMarginBottom from './components/BodySectionWithMarginBottom/BodySectionWithMarginBottom'
 import WithLogging from './components/HOC/WithLogging'
 import { getLatestNotification } from './utils/utils'
-import { APP_ACTIONS, appReducer, initialState } from './App/appReducer'
+import { APP_ACTIONS, appReducer, initialState } from './appReducer'
 
 const CourseListWithLogging = WithLogging(CourseList)
 

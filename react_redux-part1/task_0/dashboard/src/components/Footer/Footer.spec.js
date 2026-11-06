@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import Footer from './Footer'
-import { getFooterCopy } from '../utils/utils'
+import { getFooterCopy } from '../../utils/utils'
 
 // The user now comes from App through the `user` prop.
 const renderWithUser = (user) => render(<Footer user={user} />)
