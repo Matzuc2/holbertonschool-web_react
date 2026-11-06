@@ -13,9 +13,9 @@ const mockContextValues = []
 // it reads from the context, which is exactly the user state App provides.
 // createElement rather than JSX: a jest.mock factory may not reach the JSX
 // runtime that Babel would import for it.
-jest.mock('../../components/Header', () => {
+jest.mock('../components/Header/Header', () => {
   const { createElement, Fragment, useContext } = jest.requireActual('react')
-  const { default: ActualHeader } = jest.requireActual('../Header/Header')
+  const { default: ActualHeader } = jest.requireActual('../components/Header/Header')
   const { default: context } = jest.requireActual('../Context/context')
 
   return {
@@ -55,14 +55,15 @@ function mockWithPropsProbe(name, actualModule) {
   return { __esModule: true, default: PropsProbe }
 }
 
-jest.mock('../BodySection/BodySection', () =>
-  mockWithPropsProbe('BodySection', jest.requireActual('../BodySection/BodySection'))
+jest.mock('../components/BodySection/BodySection', () =>
+  mockWithPropsProbe('BodySection', jest.requireActual('../components/BodySection/BodySection'))
 )
-jest.mock('../CourseList/CourseList', () =>
-  mockWithPropsProbe('CourseList', jest.requireActual('../CourseList/CourseList'))
+jest.mock('../pages/CourseList/CourseList', () =>
+  mockWithPropsProbe('CourseList', jest.requireActual('../pages/CourseList/CourseList'))
 )
-jest.mock('../Login/Login', () =>
-  mockWithPropsProbe('Login', jest.requireActual('../Login/Login'))
+
+jest.mock('../pages/Login/Login', () =>
+  mockWithPropsProbe('Login', jest.requireActual('../pages/Login/Login'))
 )
 
 const userState = () =>
