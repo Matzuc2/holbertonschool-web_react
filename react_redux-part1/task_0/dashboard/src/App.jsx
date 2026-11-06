@@ -27,7 +27,7 @@ function App() {
           return
         }
 
-        const notifications = response.data.notifications?.map((notification) =>
+        const notifications = response.data.notificationsList?.map((notification) =>
           notification.id === 3
             ? {
                 ...notification,
