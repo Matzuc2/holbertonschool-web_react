@@ -13,7 +13,7 @@ const mockContextValues = []
 // it reads from the context, which is exactly the user state App provides.
 // createElement rather than JSX: a jest.mock factory may not reach the JSX
 // runtime that Babel would import for it.
-jest.mock('../Header/Header', () => {
+jest.mock('../../components/Header', () => {
   const { createElement, Fragment, useContext } = jest.requireActual('react')
   const { default: ActualHeader } = jest.requireActual('../Header/Header')
   const { default: context } = jest.requireActual('../Context/context')
