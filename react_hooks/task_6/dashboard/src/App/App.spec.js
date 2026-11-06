@@ -2,42 +2,36 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from './App'
 import Notifications from '../Notifications/Notifications'
-import { user as defaultUser } from '../Context/context'
 import { getLatestNotification } from '../utils/utils'
+import { initialState } from './appReducer'
 
 const renderApp = () => render(<App />)
 const mockContextValues = []
+const defaultUser = initialState.user
 
 // The password lives in App's user state but is never displayed. The Header is
-// therefore wrapped with a probe that renders the real Header next to the user
-// it reads from the context, which is exactly the user state App provides.
+// therefore wrapped with a probe that records the user state passed by App.
 // createElement rather than JSX: a jest.mock factory may not reach the JSX
 // runtime that Babel would import for it.
 jest.mock('../Header/Header', () => {
-  const { createElement, Fragment, useContext } = jest.requireActual('react')
+  const { createElement, Fragment } = jest.requireActual('react')
   const { default: ActualHeader } = jest.requireActual('../Header/Header')
-  const { default: context } = jest.requireActual('../Context/context')
 
   return {
     __esModule: true,
-    default: function HeaderWithUserProbe() {
-      const contextValue = useContext(context)
-      mockContextValues.push(contextValue)
-      const { user } = contextValue
+    default: function HeaderWithUserProbe(props) {
+      mockContextValues.push({ user: props.user, logOut: props.logOut })
 
       return createElement(
         Fragment,
         null,
-        createElement(ActualHeader),
-        createElement('output', { 'data-testid': 'user-state', hidden: true }, JSON.stringify(user))
+        createElement(ActualHeader, props),
+        createElement('output', { 'data-testid': 'user-state', hidden: true }, JSON.stringify(props.user))
       )
     },
   }
 })
 
-// Every set of props App renders these children with, so that their data
-// types can be checked and not only what they display: the string 'true'
-// opens the drawer, and the string '60' prints the same credit as 60.
 const mockRenderedProps = { BodySection: [], CourseList: [], Login: [] }
 
 // Wraps the actual component of a module with a probe that records its props
