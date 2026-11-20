@@ -60,6 +60,10 @@ function App() {
 
   useEffect(() => {
     if (!state.user.isLoggedIn) {
+      dispatch({
+        type: APP_ACTIONS.SET_COURSES,
+        payload: [],
+      })
       return
     }
 
