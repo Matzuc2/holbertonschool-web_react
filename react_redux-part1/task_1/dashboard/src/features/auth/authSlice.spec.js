@@ -5,7 +5,7 @@ describe('authSlice', () => {
     expect(authReducer(undefined, { type: '@@INIT' })).toEqual(initialState)
   })
 
-  test('sets credentials and isLoggedIn on login', () => {
+  test('updates the state correctly with login', () => {
     const state = authReducer(
       initialState,
       login({
@@ -14,18 +14,16 @@ describe('authSlice', () => {
       })
     )
 
-    expect(state.user).toEqual({
-      email: 'student@example.com',
-      password: 'password123',
-      isLoggedIn: true,
-    })
+    expect(state.user.email).toBe('student@example.com')
+    expect(state.user.password).toBe('password123')
+    expect(state.isLoggedIn).toBe(true)
   })
 
   test('isLoggedIn is false in the initial state', () => {
     expect(initialState.user.isLoggedIn).toBe(false)
   })
 
-  test('resets credentials and isLoggedIn on logout', () => {
+  test('resets the state correctly with logout', () => {
     const loggedInState = authReducer(
       initialState,
       login({
@@ -36,10 +34,8 @@ describe('authSlice', () => {
 
     const state = authReducer(loggedInState, logout())
 
-    expect(state.user).toEqual({
-      email: '',
-      password: '',
-      isLoggedIn: false,
-    })
+    expect(state.user.email).toBe('')
+    expect(state.user.password).toBe('')
+    expect(state.isLoggedIn).toBe(false)
   })
 })

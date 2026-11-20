@@ -4,8 +4,8 @@ export const initialState = {
   user: {
     email: '',
     password: '',
-    isLoggedIn: false,
   },
+  isLoggedIn: false,
 }
 
 const authSlice = createSlice({
@@ -13,22 +13,17 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action) => {
-      state.user = {
-        email: action.payload.email,
-        password: action.payload.password,
-        isLoggedIn: true,
-      }
+      state.user.email = action.payload.email
+      state.user.password = action.payload.password
+      state.isLoggedIn = true
     },
     logout: (state) => {
-      state.user = {
-        email: '',
-        password: '',
-        isLoggedIn: false,
-      }
+      state.user.email = ''
+      state.user.password = ''
+      state.isLoggedIn = false
     },
   },
 })
 
 export const { login, logout } = authSlice.actions
-export const actions = authSlice.actions
 export default authSlice.reducer
