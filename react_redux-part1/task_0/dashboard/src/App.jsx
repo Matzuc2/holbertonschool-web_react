@@ -30,10 +30,13 @@ function App() {
           return
         }
 
-        const notifications = response.data.notificationsList?.map((notification) =>
+        const notificationList =
+          response.data.notifications ?? response.data.notificationsList ?? []
+        const notifications = notificationList.map((notification) =>
           notification.id === 3
             ? {
-                ...notification,
+                id: notification.id,
+                type: notification.type,
                 html: { __html: getLatestNotification() },
               }
             : notification

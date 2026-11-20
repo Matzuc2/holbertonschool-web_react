@@ -1,35 +1,34 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import axios from 'axios'
 import App from '../App'
 import Notifications from '../components/Notifications/Notifications'
-import { user as defaultUser } from '../Context/context'
 import { getLatestNotification } from '../utils/utils'
 
+jest.mock('axios')
+
 const renderApp = () => render(<App />)
-const mockContextValues = []
+const mockHeaderProps = []
 
 // The password lives in App's user state but is never displayed. The Header is
 // therefore wrapped with a probe that renders the real Header next to the user
-// it reads from the context, which is exactly the user state App provides.
+// it receives from App.
 // createElement rather than JSX: a jest.mock factory may not reach the JSX
 // runtime that Babel would import for it.
 jest.mock('../components/Header/Header', () => {
-  const { createElement, Fragment, useContext } = jest.requireActual('react')
+  const { createElement, Fragment } = jest.requireActual('react')
   const { default: ActualHeader } = jest.requireActual('../components/Header/Header')
-  const { default: context } = jest.requireActual('../Context/context')
 
   return {
     __esModule: true,
-    default: function HeaderWithUserProbe() {
-      const contextValue = useContext(context)
-      mockContextValues.push(contextValue)
-      const { user } = contextValue
+    default: function HeaderWithUserProbe(props) {
+      mockHeaderProps.push(props)
 
       return createElement(
         Fragment,
         null,
-        createElement(ActualHeader),
-        createElement('output', { 'data-testid': 'user-state', hidden: true }, JSON.stringify(user))
+        createElement(ActualHeader, props),
+        createElement('output', { 'data-testid': 'user-state', hidden: true }, JSON.stringify(props.user))
       )
     },
   }
@@ -71,13 +70,43 @@ const userState = () =>
 
 describe('App', () => {
   beforeEach(() => {
+    axios.get.mockImplementation((url) => {
+      const response = url.includes('notifications')
+        ? {
+            data: {
+              notifications: [
+                { id: 1, type: 'default', value: 'New course available' },
+                { id: 2, type: 'urgent', value: 'New resume available' },
+                { id: 3, type: 'urgent', value: 'New data available' },
+              ],
+            },
+          }
+        : {
+            data: {
+              courses: [
+                { id: 1, name: 'ES6', credit: 60 },
+                { id: 2, name: 'Webpack', credit: 20 },
+                { id: 3, name: 'React', credit: 40 },
+              ],
+            },
+          }
+
+      return {
+        then(onFulfilled) {
+          onFulfilled(response)
+          return {
+            catch() {},
+          }
+        },
+      }
+    })
     // WithLogging logs every mount and unmount of the Login form.
     jest.spyOn(console, 'log').mockImplementation(() => {})
     // Silenced so nothing reaches the output, but still recorded: afterEach
     // fails the test on any error or warning.
     jest.spyOn(console, 'error').mockImplementation(() => {})
     jest.spyOn(console, 'warn').mockImplementation(() => {})
-    mockContextValues.length = 0
+    mockHeaderProps.length = 0
     Object.values(mockRenderedProps).forEach((props) => {
       props.length = 0
     })
@@ -203,10 +232,10 @@ describe('App', () => {
     ).toBeInTheDocument()
   })
 
-  test('closes the notifications drawer when the close button is clicked', () => {
+  test('closes the notifications drawer when the close button is clicked', async () => {
     renderApp()
 
-    fireEvent.click(screen.getByText(/your notifications/i))
+    await screen.findByText(/new course available/i)
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
 
     expect(
@@ -215,11 +244,11 @@ describe('App', () => {
   })
 
   describe('marking a notification as read', () => {
-    test('removes the clicked item from the list and logs its id', () => {
+    test('removes the clicked item from the list and logs its id', async () => {
       const { container } = renderApp()
-      fireEvent.click(screen.getByText(/your notifications/i))
+      await screen.findByText(/new course available/i)
 
-      fireEvent.click(screen.getByText(/new course available/i))
+      fireEvent.click(await screen.findByText(/new course available/i))
 
       expect(
         screen.queryByText(/new course available/i)
@@ -230,11 +259,11 @@ describe('App', () => {
       )
     })
 
-    test('removes only the item that was clicked, whatever its position', () => {
+    test('removes only the item that was clicked, whatever its position', async () => {
       const { container } = renderApp()
-      fireEvent.click(screen.getByText(/your notifications/i))
+      await screen.findByText(/new course available/i)
 
-      fireEvent.click(screen.getByText(/new resume available/i))
+      fireEvent.click(await screen.findByText(/new resume available/i))
 
       const remaining = Array.from(
         container.querySelectorAll('.notification-items li')
@@ -247,9 +276,9 @@ describe('App', () => {
       )
     })
 
-    test('shows the empty state once every notification is read', () => {
+    test('shows the empty state once every notification is read', async () => {
       const { container } = renderApp()
-      fireEvent.click(screen.getByText(/your notifications/i))
+      await screen.findByText(/new course available/i)
 
       // The first item is clicked three times over: the list shifts each time.
       for (let i = 0; i < 3; i += 1) {
@@ -286,14 +315,14 @@ describe('App', () => {
     renderApp()
 
     await logIn()
-    fireEvent.click(screen.getByText(/your notifications/i))
+    await screen.findByText(/new course available/i)
 
     expect(
       screen.getByText(/here is the list of notifications/i)
     ).toBeInTheDocument()
   })
 
-  // The user lives in App's state and reaches the Header through the context:
+  // The user lives in App's state and reaches the Header through its props:
   // logging in and out must show up in both places at once.
   describe('the logout section of the Header', () => {
     test('is not rendered before logging in', () => {
@@ -378,10 +407,10 @@ describe('App', () => {
       expect(drawerIsOpen(container)).toBe(true)
     })
 
-    test('handleDisplayDrawer keeps an open drawer open', () => {
+    test('handleDisplayDrawer keeps an open drawer open', async () => {
       const { container } = renderApp()
 
-      fireEvent.click(screen.getByText(/your notifications/i))
+      await screen.findByText(/new course available/i)
 
       expect(drawerIsOpen(container)).toBe(true)
     })
@@ -399,7 +428,7 @@ describe('App', () => {
   })
 
   describe('the user state', () => {
-    test('starts as the user of the context: logged out, no credentials', () => {
+    test('starts as the user prop: logged out, no credentials', () => {
       renderApp()
 
       expect(userState()).toEqual({
@@ -485,18 +514,18 @@ describe('App', () => {
 
   test('logIn and logOut replace user without mutating previous users', async () => {
     renderApp()
-    const initialUser = mockContextValues.at(-1).user
-    expect(initialUser).toBe(defaultUser)
+    const initialUser = mockHeaderProps.at(-1).user
+    expect(initialUser).toEqual({ email: '', password: '', isLoggedIn: false })
 
     await logIn()
-    const loggedInUser = mockContextValues.at(-1).user
+    const loggedInUser = mockHeaderProps.at(-1).user
 
     expect(loggedInUser).not.toBe(initialUser)
     expect(initialUser).toEqual({ email: '', password: '', isLoggedIn: false })
 
     fireEvent.click(screen.getByText(/^logout$/i))
 
-    expect(mockContextValues.at(-1).user).not.toBe(loggedInUser)
+    expect(mockHeaderProps.at(-1).user).not.toBe(loggedInUser)
     expect(loggedInUser).toEqual({
       email: 'user@example.com',
       password: 'secret-password',
@@ -529,7 +558,7 @@ describe('App', () => {
     const notificationsSpy = jest.spyOn(Notifications, 'type')
     renderApp()
     const initialProps = notificationsSpy.mock.lastCall[0]
-    const initialContext = mockContextValues.at(-1)
+    const initialHeaderProps = mockHeaderProps.at(-1)
 
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     const closedProps = notificationsSpy.mock.lastCall[0]
@@ -537,11 +566,11 @@ describe('App', () => {
     expect(closedProps.handleDisplayDrawer).toBe(initialProps.handleDisplayDrawer)
     expect(closedProps.handleHideDrawer).toBe(initialProps.handleHideDrawer)
     expect(closedProps.markNotificationAsRead).toBe(initialProps.markNotificationAsRead)
-    expect(mockContextValues.at(-1)).toBe(initialContext)
+    expect(mockHeaderProps.at(-1).logOut).toBe(initialHeaderProps.logOut)
 
     await logIn()
 
-    expect(mockContextValues.at(-1).logOut).toBe(initialContext.logOut)
+    expect(mockHeaderProps.at(-1).logOut).toBe(initialHeaderProps.logOut)
     fireEvent.click(screen.getByText(/your notifications/i))
     const reopenedProps = notificationsSpy.mock.lastCall[0]
     expect(reopenedProps.displayDrawer).toBe(true)
@@ -600,9 +629,11 @@ describe('App', () => {
       expect(types).toEqual(types.map(() => 'boolean'))
     })
 
-    test('Notifications gets the notifications array and three function callbacks', () => {
+    test('Notifications gets the notifications array and three function callbacks', async () => {
       const notificationsSpy = jest.spyOn(Notifications, 'type')
       renderApp()
+      await screen.findByText(/new course available/i)
+      await act(async () => {})
       const props = notificationsSpy.mock.lastCall[0]
 
       expect(props.notifications).toEqual([
@@ -676,23 +707,23 @@ describe('App', () => {
       )
     })
 
-    test('the context gets a user of strings and a boolean, and a logOut function', async () => {
+    test('the Header gets a user of strings and a boolean, and a logOut function', async () => {
       renderApp()
       await logIn()
-      expect(mockContextValues.at(-1).user).toStrictEqual({
+      expect(mockHeaderProps.at(-1).user).toStrictEqual({
         email: 'user@example.com',
         password: 'secret-password',
         isLoggedIn: true,
       })
 
       fireEvent.click(screen.getByText(/^logout$/i))
-      expect(mockContextValues.at(-1).user).toStrictEqual({
+      expect(mockHeaderProps.at(-1).user).toStrictEqual({
         email: '',
         password: '',
         isLoggedIn: false,
       })
 
-      mockContextValues.forEach(({ user, logOut }) => {
+      mockHeaderProps.forEach(({ user, logOut }) => {
         expect(typeof user.email).toBe('string')
         expect(typeof user.password).toBe('string')
         expect(typeof user.isLoggedIn).toBe('boolean')
