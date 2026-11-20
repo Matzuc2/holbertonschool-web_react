@@ -12,7 +12,11 @@ import { getLatestNotification } from './utils/utils'
 import { APP_ACTIONS, appReducer, initialState } from './appReducer'
 
 const CourseListWithLogging = WithLogging(CourseList)
-
+const API_BASE_URL = 'http://localhost:5173';
+const ENDPOINTS = {
+  courses: `${API_BASE_URL}/courses.json`,
+  notifications: `${API_BASE_URL}/notifications.json`,
+};
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
   const { displayDrawer, user, notifications, courses } = state
@@ -21,7 +25,7 @@ function App() {
     let isMounted = true
 
     axios
-      .get('http://localhost:5173/notifications.json')
+      .get(ENDPOINTS.notifications)
       .then((response) => {
         if (!isMounted) {
           return
@@ -60,7 +64,7 @@ function App() {
     let isMounted = true
 
     axios
-      .get('http://localhost:5173/courses.json')
+      .get(ENDPOINTS.courses)
       .then((response) => {
         if (!isMounted) {
           return
