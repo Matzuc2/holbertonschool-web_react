@@ -56,7 +56,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!user.isLoggedIn) {
+    if (!state.user.isLoggedIn) {
       return
     }
 
@@ -83,7 +83,7 @@ function App() {
     return () => {
       isMounted = false
     }
-  }, [user.isLoggedIn])
+  }, [state.user.isLoggedIn])
 
   const logIn = useCallback((email, password) => {
     dispatch({
