@@ -1,9 +1,11 @@
 import React from 'react';
-import { render, cleanup } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
 import WithLogging from './WithLogging';
 
+afterEach(cleanup)
+
 class MockApp extends React.Component {
-  render() {
+  render () {
     return (
       <h1>
         Hello from Mock App Component
@@ -12,13 +14,9 @@ class MockApp extends React.Component {
   }
 }
 
-afterEach(() => {
-  cleanup();
-});
+const MockWithHOC = WithLogging(MockApp)
 
-test('WithLogging renders the wrapped component heading', () => {
-  const WrappedComponent = WithLogging(MockApp);
-  const { getByText } = render(<WrappedComponent />);
-
-  expect(getByText('Hello from Mock App Component')).toBeInTheDocument();
+test('can render the heading "Hello from Mock App Component"', () => {
+  render(<MockWithHOC />)
+  expect(screen.getByRole('heading', { name: /hello from mock app component/i })).toBeInTheDocument();
 });

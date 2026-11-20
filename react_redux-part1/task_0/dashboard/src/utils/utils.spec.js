@@ -1,23 +1,31 @@
-import { getCurrentYear, getFooterCopy, getLatestNotification } from './utils'
+import { getCurrentYear, getFooterCopy, getLatestNotification } from './utils';
 
-describe('utils', () => {
-	afterEach(() => {
-		jest.useRealTimers()
-	})
+describe('getFullyYear', () => {
+  it('returns the current year', () => {
+    const currentYear = new Date().getFullYear();
+    expect(getCurrentYear()).toBe(currentYear);
+  });
+});
 
-	test('getCurrentYear returns the correct year', () => {
-		jest.useFakeTimers()
-		jest.setSystemTime(new Date('2024-01-01T00:00:00Z'))
+describe('getFooterCopy', () => {
+  it('returns the footer copy for the index page', () => {
+    const isIndex = true;
+    const footerCopy = getFooterCopy(isIndex);
+    expect(footerCopy).toBe('Holberton School');
+  });
 
-		expect(getCurrentYear()).toBe(2024)
-	})
+  it('returns the footer copy for non-index pages', () => {
+    const isIndex = false;
+    const footerCopy = getFooterCopy(isIndex);
+    expect(footerCopy).toBe('Holberton School main dashboard');
+  });
+});
 
-	test('getFooterCopy returns the correct string for true and false', () => {
-		expect(getFooterCopy(true)).toBe('Holberton School')
-		expect(getFooterCopy(false)).toBe('Holberton School main dashboard')
-	})
-
-	test('getLatestNotification returns the correct string', () => {
-		expect(getLatestNotification()).toBe('<strong>Urgent requirement</strong> - complete by EOD')
-	})
-})
+describe('getLatestNotification', () => {
+  it('returns the latest notification', () => {
+    const latestNotification = getLatestNotification();
+    expect(latestNotification).toBe(
+      '<strong>Urgent requirement</strong> - complete by EOD'
+    );
+  });
+});

@@ -1,53 +1,50 @@
 import { useState } from 'react';
 
+export default function useLogin(onLogin) {
+  const [enableSubmit, setEnableSubmit] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
 
-function useLogin(onLogin) {
-    const [enableSubmit, setEnableSubmit] = useState(false)
-    const [formData, setFormData] = useState({ email: '', password: ''})
-        
-    function handleChangeEmail (event) {
-            const nextFormData = {
-            ...formData,
-            email: event.target.value,
-        }
-        setFormData(nextFormData)
-        handleEnableSubmit(nextFormData)
-    }
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-    function handleChangePassword (event) {
-        const nextFormData = {
-            ...formData,
-            password: event.target.value,
-        }
-        setFormData(nextFormData)
-        handleEnableSubmit(nextFormData)
-    }
+  const handleChangeEmail = (e) => {
+    const newEmail = e.target.value;
+    const { password } = formData;
+    
+    setFormData(prev => ({
+      ...prev,
+      email: newEmail
+    }));
+    setEnableSubmit(validateEmail(newEmail) && password.length >= 8);
+  };
 
-    function handleEnableSubmit (data) {
+  const handleChangePassword = (e) => {
+    const newPassword = e.target.value;
+    const { email } = formData;
+    
+    setFormData(prev => ({
+      ...prev,
+      password: newPassword
+    }));
+    setEnableSubmit(validateEmail(email) && newPassword.length >= 8);
+  };
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        const isValid = data.email.trim() !=""
-        && emailRegex.test(data.email)
-            && data.password.trim() != ""
-            && data.password.length >= 8
-        setEnableSubmit(isValid)
-    }
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    onLogin(formData.email, formData.password);
+  };
 
-    function handleLoginSubmit (event) {
-        event.preventDefault();
-        onLogin(formData.email, formData.password)
-    }
-
-
-
-    return {
-        email: formData.email,
-        password: formData.password,
-        enableSubmit: enableSubmit,
-        handleChangeEmail: handleChangeEmail,
-        handleChangePassword: handleChangePassword,
-        handleLoginSubmit: handleLoginSubmit
-    }
+  return {
+    email: formData.email,
+    password: formData.password,
+    enableSubmit,
+    handleChangeEmail,
+    handleChangePassword,
+    handleLoginSubmit
+  };
 }
-
-export default useLogin;

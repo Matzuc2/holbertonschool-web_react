@@ -1,35 +1,59 @@
-import { memo } from 'react';
+import { memo } from "react";
+import { StyleSheet, css } from "aphrodite";
 
-const NotificationItem = memo(function NotificationItem({ id, type, html, value, markAsRead }) {
-  const markup = html ?? (
-    value && typeof value === 'object' && '__html' in value ? value : undefined
-  )
-  const className = `${
-    type === 'urgent'
-      ? 'text-[var(--urgent-notification-item)]'
-      : 'text-[var(--default-notification-item)]'
-  } border border-[var(--main-color)] p-3 text-sm min-[912px]:border-0 min-[912px]:p-0 min-[912px]:text-base`;
+const styles = StyleSheet.create({
+  default: {
+    color: "blue",
+    "@media (max-width: 900px)": {
+      width: "100%",
+      borderBottom: "1px solid black",
+      fontSize: "20px",
+      padding: "10px 8px",
+      listStyle: "none",
+    },
+  },
+  urgent: {
+    color: "red",
+    "@media (max-width: 900px)": {
+      width: "100%",
+      borderBottom: "1px solid black",
+      fontSize: "20px",
+      padding: "10px 8px",
+      listStyle: "none",
+    },
+  },
+});
 
-  if (markup !== undefined) {
+const NotificationItem = memo(function NotificationItem({
+  type,
+  html,
+  value,
+  markAsRead,
+  id,
+}) {
+  const itemStyle = type === "default" ? styles.default : styles.urgent;
+  // this console.log is only for test purposes and not mentionned/required in the student code
+  // console.log(`Rendering NotificationItem with id: ${id}, type: ${type}, value: ${value}`);
+  if (html !== undefined) {
     return (
-    <li
-      onClick={() => markAsRead(id)}
-      dangerouslySetInnerHTML={markup}
-      data-notification-type={type}
-      className={className}
-    />
-    )
+      <li
+        className={css(itemStyle)}
+        data-notification-type={type}
+        dangerouslySetInnerHTML={html}
+        onClick={() => markAsRead(id)}
+      ></li>
+    );
+  } else {
+    return (
+      <li
+        className={css(itemStyle)}
+        data-notification-type={type}
+        onClick={() => markAsRead(id)}
+      >
+        {value}
+      </li>
+    );
   }
-
-  return (
-    <li
-      onClick={() => markAsRead(id)}
-      data-notification-type={type}
-      className={className}
-    >
-      {value}
-    </li>
-  )
 });
 
 export default NotificationItem;

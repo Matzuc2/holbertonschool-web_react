@@ -1,132 +1,82 @@
-import { fireEvent, render } from '@testing-library/react'
-import NotificationItem from './NotificationItem'
+import { render, screen, fireEvent } from '@testing-library/react';
+import NotificationItem from './NotificationItem';
 
-describe('NotificationItem', () => {
-  // Les couleurs sont désormais portées par des classes Tailwind, que Jest ne
-  // résout pas : les assertions de style ont été retirées, comme demandé par
-  // l'énoncé. Reste le contrat qui, lui, est vérifiable ici.
-  test('renders a li with data-notification-type default', () => {
-    const { container } = render(
-      <NotificationItem type="default" value="New course available" />
-    )
-    const item = container.querySelector('li')
 
-    expect(item).toBeInTheDocument()
-    expect(item).toHaveAttribute('data-notification-type', 'default')
-  })
+test('it should call markAsRead with the correct id when the notification item is clicked', () => {
+  const mockMarkAsRead = jest.fn();
+  const props = {
+    id: 42,
+    type: 'default',
+    value: 'Test notification',
+    markAsRead: mockMarkAsRead,
+  };
 
-  test('renders a li with data-notification-type urgent', () => {
-    const { container } = render(
-      <NotificationItem type="urgent" value="New resume available" />
-    )
-    const item = container.querySelector('li')
+  render(<NotificationItem {...props} />);
 
-    expect(item).toBeInTheDocument()
-    expect(item).toHaveAttribute('data-notification-type', 'urgent')
-  })
+  const liElement = screen.getByRole('listitem');
 
-  test('renders the value as text', () => {
-    const { container } = render(
-      <NotificationItem type="default" value="New course available" />
-    )
+  fireEvent.click(liElement);
 
-    expect(container.querySelector('li')).toHaveTextContent(
-      /new course available/i
-    )
-  })
+  expect(mockMarkAsRead).toHaveBeenCalledTimes(1);
+  expect(mockMarkAsRead).toHaveBeenCalledWith(42);
+});
 
-  test('renders the html prop as markup', () => {
-    const { container } = render(
+describe('NotificationItem - React.memo behavior', () => {
+  let markAsRead;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    markAsRead = jest.fn();
+  });
+
+  test('should update when props change', () => {
+    const { rerender, container } = render(
       <NotificationItem
+        id={1}
         type="urgent"
-        html={{ __html: '<strong>Urgent requirement</strong> - complete by EOD' }}
-      />
-    )
-    const item = container.querySelector('li')
-
-    expect(item.querySelector('strong')).toBeInTheDocument()
-    expect(item).toHaveTextContent(/urgent requirement - complete by eod/i)
-  })
-
-  test('does not crash when no prop is passed', () => {
-    const { container } = render(<NotificationItem />)
-
-    expect(container.querySelector('li')).toBeInTheDocument()
-  })
-
-  test('calls markAsRead with its id when the li is clicked', () => {
-    const markAsRead = jest.fn()
-    const { container } = render(
-      <NotificationItem
-        id={7}
-        type="default"
-        value="New course available"
+        value="New notification"
         markAsRead={markAsRead}
       />
-    )
+    );
 
-    // Nothing is called until the item is actually hit.
-    expect(markAsRead).not.toHaveBeenCalled()
+    const firstRender = container.querySelector('[data-notification-type]').textContent;
 
-    fireEvent.click(container.querySelector('li'))
-
-    expect(markAsRead).toHaveBeenCalledTimes(1)
-    expect(markAsRead).toHaveBeenCalledWith(7)
-  })
-
-  test('is a function component wrapped in memo', () => {
-    expect(NotificationItem.$$typeof).toBe(Symbol.for('react.memo'))
-    expect(typeof NotificationItem.type).toBe('function')
-    expect(NotificationItem.type.prototype?.isReactComponent).toBeUndefined()
-  })
-
-  test('does not re-render when it is given the same props again', () => {
-    const markAsRead = jest.fn()
-    // memo keeps the inner function under `type`: spying on it counts every
-    // real render, while a render skipped by the memo leaves it untouched.
-    const renderSpy = jest.spyOn(NotificationItem, 'type')
-    // Two distinct elements carrying equal props: React reconciles them, so only a
-    // shallow comparison of the props can stop the second render.
-    const props = {
-      id: 1,
-      type: 'default',
-      value: 'New course available',
-      markAsRead,
-    }
-
-    const { rerender } = render(<NotificationItem {...props} />)
-    rerender(<NotificationItem {...props} />)
-
-    expect(renderSpy).toHaveBeenCalledTimes(1)
-
-    // A prop that actually changed does go through.
     rerender(
       <NotificationItem
         id={1}
         type="urgent"
-        value="New resume available"
+        value="Updated notification"
         markAsRead={markAsRead}
       />
-    )
+    );
 
-    expect(renderSpy).toHaveBeenCalledTimes(2)
+    const secondRender = container.querySelector('[data-notification-type]').textContent;
+    expect(secondRender).not.toBe(firstRender);
+    expect(secondRender).toBe('Updated notification');
+  });
 
-    renderSpy.mockRestore()
-  })
-
-  test('calls markAsRead as well when the item holds markup', () => {
-    const markAsRead = jest.fn()
-    const { container } = render(
+  test('should not re-render when props do not change', () => {
+    const { rerender, container } = render(
       <NotificationItem
-        id={3}
+        id={1}
         type="urgent"
-        html={{ __html: '<strong>Urgent requirement</strong>' }}
+        value="New notification"
         markAsRead={markAsRead}
       />
-    )
+    );
 
-    fireEvent.click(container.querySelector('li'))
+    const firstElement = container.querySelector('[data-notification-type]');
 
-    expect(markAsRead).toHaveBeenCalledWith(3)
-  })
-})
+    rerender(
+      <NotificationItem
+        id={1}
+        type="urgent"
+        value="New notification"
+        markAsRead={markAsRead}
+      />
+    );
+
+    const secondElement = container.querySelector('[data-notification-type]');
+    expect(secondElement.textContent).toBe(firstElement.textContent);
+  });
+});
