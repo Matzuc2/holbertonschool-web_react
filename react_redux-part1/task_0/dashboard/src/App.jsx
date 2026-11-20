@@ -19,7 +19,6 @@ const ENDPOINTS = {
 };
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState)
-  const { displayDrawer, user, notifications, courses } = state
 
   useEffect(() => {
     let isMounted = true
@@ -114,17 +113,17 @@ function App() {
     <div className="App flex min-h-screen w-full flex-col px-3 sm:px-5">
       <div className="root-notifications">
         <Notifications
-          displayDrawer={displayDrawer}
-          notifications={notifications}
+          displayDrawer={state.displayDrawer}
+          notifications={state.notifications}
           markNotificationAsRead={markNotificationAsRead}
           handleDisplayDrawer={handleDisplayDrawer}
           handleHideDrawer={handleHideDrawer}
         />
       </div>
-      <Header user={user} logOut={logOut} />
-      {user.isLoggedIn ? (
+      <Header user={state.user} logOut={logOut} />
+      {state.user.isLoggedIn ? (
         <BodySectionWithMarginBottom title="Course list">
-          <CourseListWithLogging courses={courses} />
+          <CourseListWithLogging courses={state.courses} />
         </BodySectionWithMarginBottom>
       ) : (
         <BodySectionWithMarginBottom title="Log in to continue">
@@ -139,7 +138,7 @@ function App() {
           voluptatibus ut magni dicta. Recusandae, quia dicta?
         </p>
       </BodySection>
-      <Footer user={user} />
+      <Footer user={state.user} />
     </div>
   )
 }
