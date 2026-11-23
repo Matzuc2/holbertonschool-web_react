@@ -13,7 +13,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
     "aphrodite": "^2.4.0",
-    "axios": "^1.7.9",
+    "axios": "^1.21.1",
     "identity-obj-proxy": "^3.0.0",
     "jest-mock-axios": "^4.8.0",
     "jsdom": "^25.0.0",

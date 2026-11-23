@@ -10,7 +10,7 @@ const ENDPOINTS ={
 
 export const initialState = {
     notifications : [],
-    displayDrawer : false
+    displayDrawer : true
 }
 
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
@@ -35,11 +35,16 @@ const notificationsSlice = createSlice({
         name:'notifications',
         initialState: initialState,
         reducers: {
-            markNotificationAsRead : (state, action) =>{
+            markNotificationAsRead : (state, action) => {
+                const notificationId =
+                  typeof action.payload === 'object'
+                    ? action.payload.notifications?.[0]?.id
+                    : action.payload
+            
                 state.notifications = state.notifications.filter(
-                    (notification) => notification.id !== action.payload.notifications[0].id
+                  (notification) => notification.id !== notificationId
                 )
-            },
+              },
             showDrawer : (state) =>{
                 state.displayDrawer = true
             },
@@ -55,5 +60,5 @@ const notificationsSlice = createSlice({
     }
 )
 
-export default notificationsSlice.reducer
 export const {markNotificationAsRead, showDrawer, hideDrawer} = notificationsSlice.actions
+export default notificationsSlice.reducer
