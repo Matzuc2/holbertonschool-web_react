@@ -1,63 +1,83 @@
 import { configureStore } from '@reduxjs/toolkit'
 import notificationsReducer, {
   fetchNotifications,
+  hideDrawer,
   initialState,
   markNotificationAsRead,
   showDrawer,
-  hideDrawer,
 } from '../notifications/notificationsSlice'
 import { getLatestNotification } from '../../utils/utils'
 
+jest.mock('../../utils/utils', () => ({
+  getLatestNotification: jest.fn(),
+}))
+
 describe('notificationsSlice', () => {
+  beforeEach(() => {
+    getLatestNotification.mockReturnValue(
+      '<strong>Urgent requirement</strong> - complete by EOD'
+    )
+  })
+
   test('returns the correct initial state by default', () => {
-    expect(notificationsReducer(undefined, { type: '@@INIT' })).toEqual(initialState)
+    expect(notificationsReducer(undefined, { type: '@@INIT' })).toEqual(
+      initialState
+    )
   })
 
   test('fetches notifications data correctly', async () => {
-    const notifications = [
-      { id: 1, type: 'default', value: 'New course available' },
-      { id: 2, type: 'urgent', value: 'New resume available' },
-      { id: 3, type: 'urgent', html: { __html: '' } },
-    ]
-
     global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue({ notifications }),
+      json: jest.fn().mockResolvedValue([
+        { id: 1, type: 'default', value: 'New course available' },
+        { id: 2, type: 'urgent', value: 'New resume available' },
+        { id: 3, type: 'urgent', value: 'Latest notification' },
+      ]),
     })
 
     const store = configureStore({
-      reducer: {
-        notifications: notificationsReducer,
-      },
+      reducer: { notifications: notificationsReducer },
     })
 
     await store.dispatch(fetchNotifications())
 
-    expect(global.fetch).toHaveBeenCalledWith('http://localhost:5173/notifications.json')
-    expect(store.getState().notifications.notifications).toHaveLength(3)
-    expect(store.getState().notifications.notifications[0]).toEqual(notifications[0])
-    expect(store.getState().notifications.notifications[2].html.__html).toBe(getLatestNotification())
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:5173/notifications.json'
+    )
+    expect(store.getState().notifications.notifications).toEqual([
+      { id: 1, type: 'default', value: 'New course available' },
+      { id: 2, type: 'urgent', value: 'New resume available' },
+      {
+        id: 3,
+        type: 'urgent',
+        value: 'Latest notification',
+        html: {
+          __html:
+            '<strong>Urgent requirement</strong> - complete by EOD',
+        },
+      },
+    ])
   })
 
-  test('removes a notification with markNotificationAsRead', () => {
-    const stateWithNotifications = {
+  test('removes a notification when markNotificationAsRead is dispatched', () => {
+    const state = {
       notifications: [
         { id: 1, type: 'default', value: 'New course available' },
         { id: 2, type: 'urgent', value: 'New resume available' },
       ],
-      displayDrawer: true,
+      displayDrawer: false,
     }
 
-    const state = notificationsReducer(
-      stateWithNotifications,
+    const updatedState = notificationsReducer(
+      state,
       markNotificationAsRead(1)
     )
 
-    expect(state.notifications).toEqual([
+    expect(updatedState.notifications).toEqual([
       { id: 2, type: 'urgent', value: 'New resume available' },
     ])
   })
 
-  test('toggles the displayDrawer state with showDrawer and hideDrawer', () => {
+  test('toggles displayDrawer with showDrawer and hideDrawer', () => {
     let state = notificationsReducer(initialState, showDrawer())
     expect(state.displayDrawer).toBe(true)
 
