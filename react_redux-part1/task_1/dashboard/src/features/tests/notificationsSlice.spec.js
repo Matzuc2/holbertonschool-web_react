@@ -58,10 +58,10 @@ describe('notificationsSlice', () => {
   })
 
   test('toggles the displayDrawer state with showDrawer and hideDrawer', () => {
-    let state = notificationsReducer(initialState, hideDrawer())
-    expect(state.displayDrawer).toBe(false)
-
-    state = notificationsReducer(state, showDrawer())
+    let state = notificationsReducer(initialState, showDrawer())
     expect(state.displayDrawer).toBe(true)
+
+    state = notificationsReducer(state, hideDrawer())
+    expect(state.displayDrawer).toBe(false)
   })
 })

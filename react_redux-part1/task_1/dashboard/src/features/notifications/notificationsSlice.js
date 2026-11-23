@@ -10,16 +10,19 @@ const ENDPOINTS ={
 
 export const initialState = {
     notifications : [],
-    displayDrawer : true
+    displayDrawer : false
 }
 
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(fetch(ENDPOINTS.notifications))
     const obj = await res.json()
     const notifications = Array.isArray(obj) ? obj : obj.notifications
-    const notificationUpdate = notifications.map((notification) =>{
+    const notificationUpdate = notifications.map((notification) => {
         if(notification.id === 3){
-            notification.html = { __html: getLatestNotification() }
+            return {
+                ...notification,
+                html: { __html: getLatestNotification() }
+            }
         }
         return notification
     })
@@ -32,7 +35,7 @@ const notificationsSlice = createSlice({
         initialState: initialState,
         reducers: {
             markNotificationAsRead : (state, action) =>{
-                const notificationId = typeof action.payload === 'object'
+                const notificationId = action.payload && typeof action.payload === 'object'
                     ? action.payload.notifications?.[0]?.id ?? action.payload.id
                     : action.payload
 
@@ -49,7 +52,9 @@ const notificationsSlice = createSlice({
         },
         extraReducers : (builder) => {
             builder.addCase(fetchNotifications.fulfilled, (state, action) =>{
-                state.notifications = action.payload
+                state.notifications = Array.isArray(action.payload)
+                    ? action.payload
+                    : action.payload.notifications
             })
         }
     }
