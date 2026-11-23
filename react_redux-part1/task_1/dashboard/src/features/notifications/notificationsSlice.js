@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, isActionCreator } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { getLatestNotification } from '../../utils/utils'
 
 
