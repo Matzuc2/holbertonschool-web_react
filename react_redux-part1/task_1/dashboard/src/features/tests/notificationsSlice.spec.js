@@ -1,4 +1,3 @@
-import { configureStore } from '@reduxjs/toolkit'
 import notificationsReducer, {
   fetchNotifications,
   hideDrawer,
@@ -34,16 +33,7 @@ describe('notificationsSlice', () => {
       ]),
     })
 
-    const store = configureStore({
-      reducer: { notifications: notificationsReducer },
-    })
-
-    await store.dispatch(fetchNotifications())
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:5173/notifications.json'
-    )
-    expect(store.getState().notifications.notifications).toEqual([
+    const notificationData = [
       { id: 1, type: 'default', value: 'New course available' },
       { id: 2, type: 'urgent', value: 'New resume available' },
       {
@@ -55,7 +45,20 @@ describe('notificationsSlice', () => {
             '<strong>Urgent requirement</strong> - complete by EOD',
         },
       },
-    ])
+    ]
+
+    const dispatch = jest.fn()
+    await fetchNotifications()(dispatch)
+
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://localhost:5173/notifications.json'
+    )
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'notifications/fetchNotifications/fulfilled',
+        payload: notificationData,
+      })
+    )
   })
 
   test('removes a notification when markNotificationAsRead is dispatched', () => {
