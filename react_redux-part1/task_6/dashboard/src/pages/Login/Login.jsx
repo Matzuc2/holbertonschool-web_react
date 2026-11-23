@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import WithLogging from "../../components/HOC/WithLogging";
-const dispatch = useDispatch();
+import { useDispatch } from 'react-redux';
 import useLogin from "../../hooks/useLogin";
 import { login } from "../../features/auth/authSlice";
 
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
 });
 
 const Login = () => {
+  const dispatch = useDispatch();
   const {
     email,
     password,
