@@ -45,7 +45,7 @@ const notificationsSlice = createSlice({
         },
         extraReducers : (builder) => {
             builder.addCase(fetchNotifications.fulfilled, (state, action) =>{
-                state.notifications = action.payload.notifications
+                state.notifications = action.payload
             })
         }
     }
