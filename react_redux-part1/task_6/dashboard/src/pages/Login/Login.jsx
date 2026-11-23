@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import WithLogging from "../../components/HOC/WithLogging";
-import store from '../../app/store' 
+const dispatch = useDispatch();
 import useLogin from "../../hooks/useLogin";
 import { login } from "../../features/auth/authSlice";
 
@@ -66,7 +66,7 @@ const Login = () => {
     handleChangeEmail,
     handleChangePassword,
     handleLoginSubmit
-  } = useLogin(store.dispatch(login));
+  } = useLogin((email, password) => dispatch(login({ email, password })));
 
   return (
     <div className={css(styles.body)}>
