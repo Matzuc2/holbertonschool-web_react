@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, isActionCreator } from '@reduxjs/toolkit'
 import { getLatestNotification } from '../../utils/utils'
 
 
@@ -16,13 +16,10 @@ export const initialState = {
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(fetch(ENDPOINTS.notifications))
     const obj = await res.json()
-    const notifications = Array.isArray(obj) ? obj : obj.notifications
+    const notifications = obj.notifications
     const notificationUpdate = notifications.map((notification) => {
         if(notification.id === 3){
-            return {
-                ...notification,
-                html: { __html: getLatestNotification() }
-            }
+            notification.html = getLatestNotification()
         }
         return notification
     })
@@ -35,12 +32,8 @@ const notificationsSlice = createSlice({
         initialState: initialState,
         reducers: {
             markNotificationAsRead : (state, action) =>{
-                const notificationId = action.payload && typeof action.payload === 'object'
-                    ? action.payload.notifications?.[0]?.id ?? action.payload.id
-                    : action.payload
-
                 state.notifications = state.notifications.filter(
-                    (notification) => notification.id !== notificationId
+                    (notification) => notification.id !== action.payload.notifications[0].id
                 )
             },
             showDrawer : (state) =>{
@@ -52,9 +45,7 @@ const notificationsSlice = createSlice({
         },
         extraReducers : (builder) => {
             builder.addCase(fetchNotifications.fulfilled, (state, action) =>{
-                state.notifications = Array.isArray(action.payload)
-                    ? action.payload
-                    : action.payload.notifications
+                state.notifications = action.payload.notifications
             })
         }
     }
