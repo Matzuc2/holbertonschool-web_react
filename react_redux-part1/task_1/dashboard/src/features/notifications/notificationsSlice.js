@@ -16,9 +16,10 @@ export const initialState = {
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(fetch(ENDPOINTS.notifications))
     const obj = await res.json()
-    const notificationUpdate = obj.notifications.map((notification) =>{
+    const notifications = Array.isArray(obj) ? obj : obj.notifications
+    const notificationUpdate = notifications.map((notification) =>{
         if(notification.id === 3){
-            notification.value = getLatestNotification()
+            notification.html = { __html: getLatestNotification() }
         }
         return notification
     })

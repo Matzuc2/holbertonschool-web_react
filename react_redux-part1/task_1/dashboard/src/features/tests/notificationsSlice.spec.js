@@ -6,6 +6,7 @@ import notificationsReducer, {
   showDrawer,
   hideDrawer,
 } from '../notifications/notificationsSlice'
+import { getLatestNotification } from '../../utils/utils'
 
 describe('notificationsSlice', () => {
   test('returns the correct initial state by default', () => {
@@ -31,8 +32,10 @@ describe('notificationsSlice', () => {
 
     await store.dispatch(fetchNotifications())
 
+    expect(global.fetch).toHaveBeenCalledWith('http://localhost:5173/notifications.json')
     expect(store.getState().notifications.notifications).toHaveLength(3)
     expect(store.getState().notifications.notifications[0]).toEqual(notifications[0])
+    expect(store.getState().notifications.notifications[2].html.__html).toBe(getLatestNotification())
   })
 
   test('removes a notification with markNotificationAsRead', () => {
