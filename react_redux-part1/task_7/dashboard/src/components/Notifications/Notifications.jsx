@@ -97,7 +97,7 @@ const Notifications = memo(function Notifications(
   const {displayDrawer, notifications} = useSelector((state) => state.notifications)
 
   const handleDisplayDrawer = () => {
-    dispatch(showDrawer);
+    dispatch(showDrawer());
   }
 
   const markNotificationAsRead = (id) => {
@@ -105,7 +105,7 @@ const Notifications = memo(function Notifications(
   };
 
   const handleHideDrawer = () => {
-    dispatch(hideDrawer);
+    dispatch(hideDrawer());
   };
   return (
 
