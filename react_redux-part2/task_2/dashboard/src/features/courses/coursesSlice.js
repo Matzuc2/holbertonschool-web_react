@@ -25,7 +25,7 @@ const coursesSlice = createSlice({
                 selectedCourse.isSelected = true
             }
         },
-        unselectCourse: (state, action) =>{
+        unSelectCourse: (state, action) =>{
             const id = action.payload
             let selectedCourse = state.courses.find(course => course.id === id)
             if (selectedCourse){
