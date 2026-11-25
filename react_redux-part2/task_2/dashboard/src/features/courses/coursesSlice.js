@@ -23,7 +23,6 @@ const coursesSlice = createSlice({
             let selectedCourse = state.courses.find(course => course.id === id)
             if (selectedCourse){
                 selectedCourse.isSelected = true
-                console.log(`course ${id} is ${selectedCourse.isSelected}`)
             }
         },
         unselectCourse: (state, action) =>{
@@ -31,7 +30,6 @@ const coursesSlice = createSlice({
             let selectedCourse = state.courses.find(course => course.id === id)
             if (selectedCourse){
                 selectedCourse.isSelected = false
-                console.log(`course ${id} is ${selectedCourse.isSelected}`)
             }
         }
 
@@ -50,4 +48,4 @@ const coursesSlice = createSlice({
 })
 
 export default coursesSlice.reducer
-export const {unselectCourse, selectCourse} = coursesSlice.actions 
+export const {unSelectCourse, selectCourse} = coursesSlice.actions 

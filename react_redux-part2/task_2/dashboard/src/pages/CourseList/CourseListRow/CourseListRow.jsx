@@ -15,7 +15,7 @@ export default function CourseListRow(
     isHeader = false,
     textFirstCell = '',
     textSecondCell = null,
-    changeRow = () => {},
+    onChangeRow = () => {},
     isSelected = Boolean
 }
 ) {
@@ -28,10 +28,16 @@ export default function CourseListRow(
         {textSecondCell ? <th>{textSecondCell}</th> : null}
       </tr>
     ) : (
-      <tr className={css(rowStyle)}>
-        <td>{textFirstCell}</td>
+      <tr className={css(rowStyle)}>        
+        <td>
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={(e) => onChangeRow(id, e.target.checked)}
+          />
+          {textFirstCell}
+        </td>
         <td>{textSecondCell}</td>
-        <td><input type='checkbox' checked={isSelected} onChange={(event) => changeRow(id, event.target.checked)}></input></td>
       </tr>
     )
   )
