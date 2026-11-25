@@ -1,19 +1,44 @@
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from 'react-redux';
 import App from '../App';
+import rootReducer from '../app/rootReducer';
 import mockAxios from 'jest-mock-axios';
+
+const NOTIFICATIONS_URL = 'http://localhost:5173/notifications.json';
+const COURSES_URL = 'http://localhost:5173/courses.json';
 
 afterEach(() => {
   mockAxios.reset();
 });
 
 const mockNotificationsResponse = {
-  data: {
-    notifications: [
-      { id: 1, type: 'default', value: 'New course available' },
-      { id: 2, type: 'urgent', value: 'New resume available' },
-      { id: 3, type: 'urgent', html: { __html: '' } }
-    ]
-  }
+  data: [
+    {
+      id: 1,
+      context: {
+        isRead: false,
+        type: 'default',
+        value: 'New course available',
+      },
+    },
+    {
+      id: 2,
+      context: {
+        isRead: false,
+        type: 'urgent',
+        value: 'New resume available',
+      },
+    },
+    {
+      id: 3,
+      context: {
+        isRead: false,
+        type: 'urgent',
+        value: 'Urgent requirement',
+      },
+    },
+  ],
 };
 
 const mockCoursesResponse = {
@@ -26,10 +51,22 @@ const mockCoursesResponse = {
   }
 };
 
-test('The App component renders without crashing', async () => {
-  render(<App />);
+const renderApp = () => {
+  const store = configureStore({ reducer: rootReducer });
+  const result = render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  );
 
-  mockAxios.mockResponse(mockNotificationsResponse);
+  mockAxios.mockResponseFor({ url: NOTIFICATIONS_URL }, mockNotificationsResponse);
+  mockAxios.mockResponseFor({ url: COURSES_URL }, mockCoursesResponse);
+
+  return { store, ...result };
+};
+
+test('The App component renders without crashing', async () => {
+  renderApp();
 
   await waitFor(() => {
     expect(mockAxios.get).toHaveBeenCalled();
@@ -37,9 +74,7 @@ test('The App component renders without crashing', async () => {
 });
 
 test('The App component renders Login by default (user not logged in)', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  renderApp();
 
   await waitFor(() => {
     const emailLabelElement = screen.getByLabelText(/email/i);
@@ -53,9 +88,7 @@ test('The App component renders Login by default (user not logged in)', async ()
 });
 
 test('it should display "News from the School" title and paragraph by default', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  renderApp();
 
   await waitFor(() => {
     const newsTitle = screen.getByRole('heading', { name: /news from the school/i });
@@ -66,12 +99,8 @@ test('it should display "News from the School" title and paragraph by default', 
   });
 });
 
-test('clicking on a notification item removes it from the list and logs the message', async () => {
-  const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-  const { container } = render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+test('clicking on a notification item removes it from the list', async () => {
+  const { container } = renderApp();
 
   await waitFor(() => {
     const notificationItems = container.querySelectorAll('[data-notification-type]');
@@ -84,55 +113,49 @@ test('clicking on a notification item removes it from the list and logs the mess
   if (notificationItems.length > 0) {
     fireEvent.click(notificationItems[0]);
 
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(/Notification \d+ has been marked as read/));
-
     const updatedNotificationItems = container.querySelectorAll('[data-notification-type]');
     expect(updatedNotificationItems.length).toBe(initialCount - 1);
   }
-
-  consoleSpy.mockRestore();
 });
 
 test('handleDisplayDrawer sets displayDrawer to true', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  const { container } = renderApp();
 
   await waitFor(() => {
     expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
   });
 
+  const drawer = container.querySelector('[class*="notificationItems"]');
+  const initialClassName = drawer.className;
   const closeButton = screen.getByRole('button', { name: /close/i });
   fireEvent.click(closeButton);
 
-  expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
+  expect(drawer.className).not.toBe(initialClassName);
 
   const notificationTitle = screen.getByText(/your notifications/i);
   fireEvent.click(notificationTitle);
 
-  expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
+  expect(drawer.className).toBe(initialClassName);
 });
 
 test('handleHideDrawer sets displayDrawer to false', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  const { container } = renderApp();
 
   await waitFor(() => {
     expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
   });
 
+  const drawer = container.querySelector('[class*="notificationItems"]');
+  const initialClassName = drawer.className;
   const closeButton = screen.getByRole('button', { name: /close/i });
   fireEvent.click(closeButton);
 
-  expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
+  expect(drawer.className).not.toBe(initialClassName);
   expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
 });
 
 test('logIn function updates user state with email, password, and isLoggedIn true', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  renderApp();
 
   await waitFor(() => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -151,7 +174,7 @@ test('logIn function updates user state with email, password, and isLoggedIn tru
   const submitButton = screen.getByRole('button', { name: /ok/i });
   fireEvent.click(submitButton);
 
-  mockAxios.mockResponse(mockCoursesResponse);
+  mockAxios.mockResponseFor({ url: COURSES_URL }, mockCoursesResponse);
 
   await waitFor(() => {
     expect(screen.queryByLabelText(/email/i)).not.toBeInTheDocument();
@@ -161,9 +184,7 @@ test('logIn function updates user state with email, password, and isLoggedIn tru
 });
 
 test('logOut function resets user state to isLoggedIn false with empty email and password', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  renderApp();
 
   await waitFor(() => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -177,7 +198,7 @@ test('logOut function resets user state to isLoggedIn false with empty email and
   fireEvent.change(passwordInput, { target: { value: 'password123' } });
   fireEvent.click(submitButton);
 
-  mockAxios.mockResponse(mockCoursesResponse);
+  mockAxios.mockResponseFor({ url: COURSES_URL }, mockCoursesResponse);
 
   await waitFor(() => {
     expect(screen.getByText('test@example.com')).toBeInTheDocument();
@@ -194,11 +215,9 @@ test('logOut function resets user state to isLoggedIn false with empty email and
 });
 
 test('verify notifications data is fetched when App component loads initially', async () => {
-  render(<App />);
+  renderApp();
 
-  expect(mockAxios.get).toHaveBeenCalledWith('http://localhost:5173/notifications.json');
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  expect(mockAxios.get).toHaveBeenCalledWith(NOTIFICATIONS_URL);
 
   await waitFor(() => {
     expect(screen.getByText('New course available')).toBeInTheDocument();
@@ -207,9 +226,7 @@ test('verify notifications data is fetched when App component loads initially', 
 });
 
 test('verify courses data is fetched when user state changes to logged in', async () => {
-  render(<App />);
-
-  mockAxios.mockResponse(mockNotificationsResponse);
+  renderApp();
 
   await waitFor(() => {
     expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
@@ -224,10 +241,10 @@ test('verify courses data is fetched when user state changes to logged in', asyn
   fireEvent.click(submitButton);
 
   await waitFor(() => {
-    expect(mockAxios.get).toHaveBeenCalledWith('http://localhost:5173/courses.json');
+    expect(mockAxios.get).toHaveBeenCalledWith(COURSES_URL);
   });
 
-  mockAxios.mockResponse(mockCoursesResponse);
+  mockAxios.mockResponseFor({ url: COURSES_URL }, mockCoursesResponse);
 
   await waitFor(() => {
     expect(screen.getByText('ES6')).toBeInTheDocument();
