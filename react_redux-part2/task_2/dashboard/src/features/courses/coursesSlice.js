@@ -39,8 +39,10 @@ const coursesSlice = createSlice({
     },
     extraReducers : (builder) => {
         builder.addCase(fetchCourses.fulfilled, (state, action) =>{
-            state.courses = action.payload
-            state.isSelected = false
+              state.courses = action.payload.map(course => ({
+                ...course,
+                isSelected: false
+            }));
         },
         builder.addCase(logout, (state) =>{
             state.courses = []
