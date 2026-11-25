@@ -52,7 +52,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: NOTIFICATIONS_DATA }
+      data: NOTIFICATIONS_DATA
     });
 
     await promise;
@@ -79,7 +79,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: NOTIFICATIONS_DATA }
+      data: NOTIFICATIONS_DATA
     });
 
     await promise;
@@ -97,7 +97,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: NOTIFICATIONS_DATA }
+      data: NOTIFICATIONS_DATA
     });
 
     await promise;
@@ -115,7 +115,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: NOTIFICATIONS_DATA }
+      data: NOTIFICATIONS_DATA
     });
 
     await promise;
@@ -137,7 +137,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: [] }
+      data: []
     });
 
     await promise;
@@ -155,7 +155,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: { notifications: NOTIFICATIONS_DATA }
+      data: NOTIFICATIONS_DATA
     });
 
     await promise;
@@ -219,7 +219,7 @@ describe('Notifications', () => {
       const promise = store.dispatch(fetchNotifications());
 
       mockAxios.mockResponse({
-        data: { notifications: NOTIFICATIONS_DATA }
+        data: NOTIFICATIONS_DATA
       });
 
       await promise;
@@ -245,7 +245,7 @@ describe('Notifications', () => {
       const promise = store.dispatch(fetchNotifications());
 
       mockAxios.mockResponse({
-        data: { notifications: NOTIFICATIONS_DATA }
+        data: NOTIFICATIONS_DATA
       });
 
       await promise;

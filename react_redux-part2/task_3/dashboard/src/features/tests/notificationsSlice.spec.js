@@ -91,7 +91,7 @@ describe('notificationsSlice', () => {
       const promise = fetchNotifications()(dispatch, getState, null);
 
       mockAxios.mockResponse({
-        data: { notifications }
+        data: notifications
       });
 
       await promise;

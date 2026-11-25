@@ -14,7 +14,12 @@ export const initialState = {
 
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(axios.get(ENDPOINTS.notifications))
-    const notifications = res.data.notifications
+    const notifications = res.data
+
+    if (!Array.isArray(notifications)) {
+        throw new TypeError('Expected notifications response to be an array.');
+    }
+
     return notifications
         .filter((notification) => notification.context.isRead === false)
         .map((notification) => ({
