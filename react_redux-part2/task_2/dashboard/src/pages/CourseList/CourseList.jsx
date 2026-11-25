@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
 function CourseList() {
   const {courses} = useSelector((state)=> state.courses)
   const dispacth = useDispatch()
+  
   function onChangeRow (id, checked){
     if(checked === true){
       dispacth(selectCourse(id))
