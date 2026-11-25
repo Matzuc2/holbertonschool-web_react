@@ -11,11 +11,11 @@ const styles = StyleSheet.create({
 
 export default function CourseListRow(
 {
-    id = '',
+    id,
     isHeader = false,
     textFirstCell = '',
     textSecondCell = null,
-    changeRow = () => {},
+    onChangeRow = () => {},
     isSelected = false
 }
 ) {
@@ -33,7 +33,7 @@ export default function CourseListRow(
           <input
             type="checkbox"
             checked={isSelected}
-            onChange={(e) => changeRow(id, e.target.checked)}
+            onChange={(e) => onChangeRow(id, e.target.checked)}
           />
           {textFirstCell}
         </td>

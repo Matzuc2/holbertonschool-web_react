@@ -101,6 +101,7 @@ describe('CourseListRow', () => {
       expect(checkbox).not.toBeChecked();
 
       fireEvent.click(checkbox);
+      expect(store.getState().courses.courses[0].isSelected).toBe(true);
 
       expect(checkbox).toBeChecked();
     });

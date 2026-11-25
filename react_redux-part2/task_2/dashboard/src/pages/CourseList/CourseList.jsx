@@ -66,7 +66,7 @@ function CourseList() {
                     id={course.id} 
                     textFirstCell={course.name} 
                     textSecondCell={course.credit}
-                    changeRow={onChangeRow}
+                    onChangeRow={onChangeRow}
                     isSelected={course.isSelected || false}
                   />
                 ))
