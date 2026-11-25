@@ -116,7 +116,7 @@ describe('CourseListRow', () => {
         textSecondCell="60"
         id={1}
         isSelected={true}
-        onChangeRow={mockOnChangeRow}
+        changeRow={mockOnChangeRow}
       />
     );
 
