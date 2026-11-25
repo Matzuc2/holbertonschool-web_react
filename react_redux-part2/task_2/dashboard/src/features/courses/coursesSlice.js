@@ -8,7 +8,6 @@ const ENDPOINTS ={
 }
 const initialState = {
     courses: [],
-    isSelected: false
 }
 export const fetchCourses = createAsyncThunk("courses/fetchCourses", async () =>{
     const res = await axios.get(ENDPOINTS.courses)
@@ -24,7 +23,7 @@ const coursesSlice = createSlice({
             let selectedCourse = state.courses.find(course => course.id === id)
             if (selectedCourse){
                 selectedCourse.isSelected = true
-                console.log(`course ${id} is selected`)
+                console.log(`course ${id} is ${selectedCourse.isSelected}`)
             }
         },
         unselectCourse: (state, action) =>{
@@ -32,7 +31,7 @@ const coursesSlice = createSlice({
             let selectedCourse = state.courses.find(course => course.id === id)
             if (selectedCourse){
                 selectedCourse.isSelected = false
-                console.log(`course ${id} is unselected`)
+                console.log(`course ${id} is ${selectedCourse.isSelected}`)
             }
         }
 
