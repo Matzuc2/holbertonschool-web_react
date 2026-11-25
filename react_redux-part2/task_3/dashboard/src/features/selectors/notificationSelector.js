@@ -11,7 +11,7 @@ export const getFilteredNotifications = createSelector(
     }
 
     return notifications.filter(
-      (notification) => notification.context.type === filter
+      (notification) => notification.type === filter
     );
   }
 );

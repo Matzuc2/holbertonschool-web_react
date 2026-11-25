@@ -25,6 +25,14 @@ describe('Notifications', () => {
         isRead: false,
         value: 'Non diam phasellus vestibulum lorem sed risus ultricies. Tellus mauris a diam maecenas sed'
       }
+    },
+    {
+      id: 'read-notification',
+      context: {
+        type: 'urgent',
+        isRead: true,
+        value: 'This notification has already been read'
+      }
     }
   ];
 
@@ -44,7 +52,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: NOTIFICATIONS_DATA
+      data: { notifications: NOTIFICATIONS_DATA }
     });
 
     await promise;
@@ -58,13 +66,20 @@ describe('Notifications', () => {
     expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
     expect(screen.getByText(/ut labore et dolore magna aliqua/i)).toBeInTheDocument();
+    expect(screen.queryByText('This notification has already been read')).not.toBeInTheDocument();
+    expect(store.getState().notifications.notifications[0]).toEqual({
+      id: NOTIFICATIONS_DATA[0].id,
+      type: NOTIFICATIONS_DATA[0].context.type,
+      isRead: NOTIFICATIONS_DATA[0].context.isRead,
+      value: NOTIFICATIONS_DATA[0].context.value,
+    });
   });
 
   test('toggles drawer visibility when clicking the title', async () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: NOTIFICATIONS_DATA
+      data: { notifications: NOTIFICATIONS_DATA }
     });
 
     await promise;
@@ -82,7 +97,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: NOTIFICATIONS_DATA
+      data: { notifications: NOTIFICATIONS_DATA }
     });
 
     await promise;
@@ -100,7 +115,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: NOTIFICATIONS_DATA
+      data: { notifications: NOTIFICATIONS_DATA }
     });
 
     await promise;
@@ -122,7 +137,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: []
+      data: { notifications: [] }
     });
 
     await promise;
@@ -140,7 +155,7 @@ describe('Notifications', () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
-      data: NOTIFICATIONS_DATA
+      data: { notifications: NOTIFICATIONS_DATA }
     });
 
     await promise;
@@ -204,7 +219,7 @@ describe('Notifications', () => {
       const promise = store.dispatch(fetchNotifications());
 
       mockAxios.mockResponse({
-        data: NOTIFICATIONS_DATA
+        data: { notifications: NOTIFICATIONS_DATA }
       });
 
       await promise;
@@ -217,20 +232,20 @@ describe('Notifications', () => {
 
       expect(screen.getAllByRole('listitem')).toHaveLength(2);
 
-      const urgentButton = screen.getByText('‼️');
-
-      fireEvent.click(urgentButton);
+      fireEvent.click(screen.getByRole('button', { name: 'Show urgent notifications' }));
       expect(screen.getAllByRole('listitem')).toHaveLength(1);
+      expect(screen.getByText(/ut labore et dolore magna aliqua/i)).toBeInTheDocument();
 
-      fireEvent.click(urgentButton);
-      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+      fireEvent.click(screen.getByRole('button', { name: 'Show default notifications' }));
+      expect(screen.getAllByRole('listitem')).toHaveLength(1);
+      expect(screen.getByText(/non diam phasellus vestibulum/i)).toBeInTheDocument();
     });
 
     test('toggles default filter correctly', async () => {
       const promise = store.dispatch(fetchNotifications());
 
       mockAxios.mockResponse({
-        data: NOTIFICATIONS_DATA
+        data: { notifications: NOTIFICATIONS_DATA }
       });
 
       await promise;
@@ -243,13 +258,13 @@ describe('Notifications', () => {
 
       expect(screen.getAllByRole('listitem')).toHaveLength(2);
 
-      const defaultButton = screen.getByText('??');
-
-      fireEvent.click(defaultButton);
+      fireEvent.click(screen.getByRole('button', { name: 'Show default notifications' }));
       expect(screen.getAllByRole('listitem')).toHaveLength(1);
-      
-      fireEvent.click(defaultButton);
-      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+      expect(screen.getByText(/non diam phasellus vestibulum/i)).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Show urgent notifications' }));
+      expect(screen.getAllByRole('listitem')).toHaveLength(1);
+      expect(screen.getByText(/ut labore et dolore magna aliqua/i)).toBeInTheDocument();
     });
   });
 });

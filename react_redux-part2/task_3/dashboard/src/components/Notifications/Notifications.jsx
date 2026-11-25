@@ -118,7 +118,6 @@ const Notifications = memo(function Notifications(
     setCurrentFilter('default')
   }
   const filteredNotifications = useSelector((state) => getFilteredNotifications(state, currentFilter))
-  console.log(filteredNotifications)
   const loading = useSelector((state) => state.notifications.loading);
   const markNotificationAsRead = (id) => {
       dispatch(markNotificationAsReadAction(id));
@@ -168,8 +167,8 @@ const Notifications = memo(function Notifications(
                   <NotificationItem
                     id={notification.id}
                     key={notification.id}
-                    type={notification.context.type}
-                    value={notification.context.value}
+                    type={notification.type}
+                    value={notification.value}
                     markAsRead={markNotificationAsRead}
                   />
                 ))}

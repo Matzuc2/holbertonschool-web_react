@@ -15,10 +15,14 @@ export const initialState = {
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(axios.get(ENDPOINTS.notifications))
     const notifications = res.data.notifications
-    const notificationsUpdate = notifications.filter(
-        (notification) => notification.context.isRead === false
-    );
-    return notificationsUpdate
+    return notifications
+        .filter((notification) => notification.context.isRead === false)
+        .map((notification) => ({
+            id: notification.id,
+            type: notification.context.type,
+            isRead: notification.context.isRead,
+            value: notification.context.value,
+        }));
 })
 
 const notificationsSlice = createSlice({
