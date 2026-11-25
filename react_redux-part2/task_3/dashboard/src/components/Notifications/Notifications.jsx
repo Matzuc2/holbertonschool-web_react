@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { memo, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import closeIcon from "../../assets/close-icon.png";
 import NotificationItem from "../NotificationItem/NotificationItem";
@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   markNotificationAsRead as markNotificationAsReadAction,
 } from "../../features/notifications/notificationsSlice"
+import { getFilteredNotifications } from "../../features/selectors/notificationSelector";
 const opacityKeyframes = {
   from: {
     opacity: 0.5,
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
 
 const Notifications = memo(function Notifications(
 ) {
+  const [currentFilter, setCurrentFilter] = useState('all') 
   const dispatch = useDispatch();
   const DrawerRef = useRef(null)
 
@@ -109,9 +111,15 @@ const Notifications = memo(function Notifications(
     const visibleClass = css(styles.visible);
     current.classList.toggle(visibleClass);
   }
-  const {notifications, loading} = useSelector((state) => state.notifications)
-
-  console.log("i'm logged")
+  function handleSetFilterUrgent() {
+    setCurrentFilter('urgent')
+  }
+  function handleSetFilterDefault() {
+    setCurrentFilter('default')
+  }
+  const filteredNotifications = useSelector((state) => getFilteredNotifications(state, currentFilter))
+  console.log(filteredNotifications)
+  const loading = useSelector((state) => state.notifications.loading);
   const markNotificationAsRead = (id) => {
       dispatch(markNotificationAsReadAction(id));
   };
@@ -127,7 +135,25 @@ const Notifications = memo(function Notifications(
       </div>
       {!loading ? (
       <div className={css(styles.notificationItems)} ref={DrawerRef}>
-          {notifications.length > 0 ? (
+          <div>
+            <button
+              type="button"
+              aria-label="Show urgent notifications"
+              aria-pressed={currentFilter === 'urgent'}
+              onClick={handleSetFilterUrgent}
+            >
+              ‼️
+            </button>
+            <button
+              type="button"
+              aria-label="Show default notifications"
+              aria-pressed={currentFilter === 'default'}
+              onClick={handleSetFilterDefault}
+            >
+              ??
+            </button>
+          </div>
+          {filteredNotifications.length > 0 ? (
             <>
               <p className={css(styles.p)}>Here is the list of notifications</p>
               <button
@@ -138,13 +164,12 @@ const Notifications = memo(function Notifications(
                 <img src={closeIcon} alt="close icon" />
               </button>
               <ul className={css(styles.ul)}>
-                {notifications.map((notification) => (
+                {filteredNotifications.map((notification) => (
                   <NotificationItem
                     id={notification.id}
                     key={notification.id}
-                    type={notification.type}
-                    value={notification.value}
-                    html={notification.html}
+                    type={notification.context.type}
+                    value={notification.context.value}
                     markAsRead={markNotificationAsRead}
                   />
                 ))}

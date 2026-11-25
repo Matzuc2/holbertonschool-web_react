@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { getLatestNotification } from '../../utils/utils'
 import axios from 'axios';
 
 const API_BASE_URL = "http://localhost:5173"
@@ -16,18 +15,9 @@ export const initialState = {
 export const fetchNotifications = createAsyncThunk('notifications/fetchNotifications', async ()=>{
     const res = await(axios.get(ENDPOINTS.notifications))
     const notifications = res.data.notifications
-    const latestNotification = {
-      id: 3,
-      type: 'urgent',
-      html: { __html: getLatestNotification() },
-    };
-    const notificationsUpdate = notifications.map((notification) => {
-        if(notification.id === 3){
-            notification = latestNotification
-        }
-        return notification
-    })
-    
+    const notificationsUpdate = notifications.filter(
+        (notification) => notification.context.isRead === false
+    );
     return notificationsUpdate
 })
 
@@ -56,7 +46,7 @@ const notificationsSlice = createSlice({
                 state.loading = true;
             })
             builder.addCase(fetchNotifications.rejected, (state) =>{
-                state.loading = false
+                state.loading = false;
             })
         }
     }
