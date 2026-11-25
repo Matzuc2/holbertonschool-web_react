@@ -112,10 +112,20 @@ const Notifications = memo(function Notifications(
     current.classList.toggle(visibleClass);
   }
   function handleSetFilterUrgent() {
-    setCurrentFilter('urgent')
+    setCurrentFilter((current) => {
+      if (current === 'urgent') {
+        return 'all';
+      }
+      return 'urgent';
+    });
   }
   function handleSetFilterDefault() {
-    setCurrentFilter('default')
+    setCurrentFilter((current) => {
+      if (current === 'default') {
+        return 'all';
+      }
+      return 'default';
+    });
   }
   const filteredNotifications = useSelector((state) => getFilteredNotifications(state, currentFilter))
   const loading = useSelector((state) => state.notifications.loading);

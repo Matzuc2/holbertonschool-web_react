@@ -232,13 +232,14 @@ describe('Notifications', () => {
 
       expect(screen.getAllByRole('listitem')).toHaveLength(2);
 
-      fireEvent.click(screen.getByRole('button', { name: 'Show urgent notifications' }));
+      const urgentButton = screen.getByRole('button', { name: 'Show urgent notifications' });
+      fireEvent.click(urgentButton);
       expect(screen.getAllByRole('listitem')).toHaveLength(1);
       expect(screen.getByText(/ut labore et dolore magna aliqua/i)).toBeInTheDocument();
 
-      fireEvent.click(screen.getByRole('button', { name: 'Show default notifications' }));
-      expect(screen.getAllByRole('listitem')).toHaveLength(1);
-      expect(screen.getByText(/non diam phasellus vestibulum/i)).toBeInTheDocument();
+      fireEvent.click(urgentButton);
+      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+      expect(urgentButton).toHaveAttribute('aria-pressed', 'false');
     });
 
     test('toggles default filter correctly', async () => {
@@ -258,13 +259,14 @@ describe('Notifications', () => {
 
       expect(screen.getAllByRole('listitem')).toHaveLength(2);
 
-      fireEvent.click(screen.getByRole('button', { name: 'Show default notifications' }));
+      const defaultButton = screen.getByRole('button', { name: 'Show default notifications' });
+      fireEvent.click(defaultButton);
       expect(screen.getAllByRole('listitem')).toHaveLength(1);
       expect(screen.getByText(/non diam phasellus vestibulum/i)).toBeInTheDocument();
 
-      fireEvent.click(screen.getByRole('button', { name: 'Show urgent notifications' }));
-      expect(screen.getAllByRole('listitem')).toHaveLength(1);
-      expect(screen.getByText(/ut labore et dolore magna aliqua/i)).toBeInTheDocument();
+      fireEvent.click(defaultButton);
+      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+      expect(defaultButton).toHaveAttribute('aria-pressed', 'false');
     });
   });
 });
