@@ -31,6 +31,7 @@ function CourseList() {
   const dispacth = useDispatch()
 
   function onChangeRow (id, checked){
+    console.log("im invoked !")
     if(checked === true){
       dispacth(selectCourse(id))
     }
@@ -65,7 +66,7 @@ function CourseList() {
                     id={course.id} 
                     textFirstCell={course.name} 
                     textSecondCell={course.credit}
-                    onChangeRow={onChangeRow}
+                    changeRow={onChangeRow}
                     isSelected={course.isSelected || false}
                   />
                 ))
