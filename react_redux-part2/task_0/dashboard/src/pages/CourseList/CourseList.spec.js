@@ -1,16 +1,19 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import CourseList from './CourseList';
-
+import { renderWithProviders } from '../../tests/testUtils';
 
 test('it should render the CourseList component with 5 rows', () => {
-  const props = {
-    courses : [
-      { id:1, name:'ES6', credit:60 },
-      { id:2, name:'Webpack', credit:20 },
-      { id:3, name:'React', credit:40 }
-    ]
-  }
-  render(<CourseList {...props} />)
+  renderWithProviders(<CourseList />, {
+    preloadedState: {
+      courses: {
+        courses: [
+          { id: 1, name: 'ES6', credit: 60 },
+          { id: 2, name: 'Webpack', credit: 20 },
+          { id: 3, name: 'React', credit: 40 },
+        ],
+      },
+    },
+  });
 
   const rowElements = screen.getAllByRole('row');
 
@@ -18,11 +21,7 @@ test('it should render the CourseList component with 5 rows', () => {
 })
 
 test('it should render the CourseList component with 1 row', () => {
-  const props = {
-    courses : []
-  }
-
-  render(<CourseList {...props} />)
+  renderWithProviders(<CourseList />);
 
   const rowElement = screen.getAllByRole('row');
   const rowText = screen.getByText(/No course available yet/i);
