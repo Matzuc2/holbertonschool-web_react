@@ -21,8 +21,7 @@ const styles = StyleSheet.create({
 export default function App() {
 
   const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const {courses} = useSelector((state) => state.courses)
+  const { isLoggedIn } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(fetchNotifications())

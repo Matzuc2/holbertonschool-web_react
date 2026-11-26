@@ -1,8 +1,7 @@
 import notificationsSlice, {
   markNotificationAsRead,
-  showDrawer,
-  hideDrawer,
   fetchNotifications,
+  initialState,
 } from '../notifications/notificationsSlice';
 
 
@@ -13,11 +12,6 @@ afterEach(() => {
 });
 
 describe('notificationsSlice', () => {
-  const initialState = {
-    notifications: [],
-    displayDrawer: true,
-  };
-
   test('should return the initial state', () => {
     expect(notificationsSlice(undefined, { type: 'unknown' })).toEqual(
       initialState
@@ -42,32 +36,13 @@ describe('notificationsSlice', () => {
     );
   });
 
-  test('should handle showDrawer', () => {
-    const action = showDrawer();
-    const expectedState = {
-      ...initialState,
-      displayDrawer: true,
-    };
-    expect(notificationsSlice(initialState, action)).toEqual(expectedState);
-  });
-
-  test('should handle hideDrawer', () => {
-    const stateWithDrawerClosed = {
-      ...initialState,
-      displayDrawer: false,
-    };
-    const action = hideDrawer();
-    expect(notificationsSlice(initialState, action)).toEqual(
-      stateWithDrawerClosed
-    );
-  });
-
   describe('fetchNotifications async thunk', () => {
     test('should handle fetchNotifications.pending', () => {
       const action = { type: fetchNotifications.pending.type };
       const state = notificationsSlice(initialState, action);
       expect(state).toEqual({
         ...initialState,
+        loading: true,
       });
     });
 
@@ -75,9 +50,13 @@ describe('notificationsSlice', () => {
       const action = {
         type: fetchNotifications.rejected.type,
       };
-      const state = notificationsSlice(initialState, action);
+      const state = notificationsSlice(
+        { ...initialState, loading: true },
+        action
+      );
       expect(state).toEqual({
         ...initialState,
+        loading: false,
       });
     });
 

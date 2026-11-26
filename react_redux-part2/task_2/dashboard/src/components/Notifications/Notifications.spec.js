@@ -1,3 +1,4 @@
+import { Profiler } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -47,7 +48,7 @@ describe('Notifications', () => {
     expect(screen.getByText('New resume available')).toBeInTheDocument();
   });
 
-  test('toggles drawer visibility when clicking the title', async() => {
+  test('toggles the Aphrodite visible class when clicking the title', async() => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
@@ -68,16 +69,14 @@ describe('Notifications', () => {
       </Provider>
     );
 
-    expect(screen.getByText('New course available')).toBeInTheDocument();
-    expect(screen.getByText('New resume available')).toBeInTheDocument();
+    const drawer = screen.getByText(/here is the list of notifications/i).parentElement;
+    const initialClassName = drawer.className;
 
     fireEvent.click(screen.getByText(/your notifications/i));
-    expect(screen.queryByRole('listitem', { name: 'New course available' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('listitem', { name: 'New resume available' })).not.toBeInTheDocument();
+    expect(drawer.className).not.toBe(initialClassName);
 
     fireEvent.click(screen.getByText(/your notifications/i));
-    expect(screen.getByText('New course available')).toBeInTheDocument();
-    expect(screen.getByText('New resume available')).toBeInTheDocument();
+    expect(drawer.className).toBe(initialClassName);
   });
 
   test('close drawer on close button', async () => {
@@ -135,7 +134,7 @@ describe('Notifications', () => {
     });
   });
 
-  test('renders with displayDrawer true', async () => {
+  test('renders the notification title', async () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
@@ -159,7 +158,7 @@ describe('Notifications', () => {
     expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
   });
 
-  test('does not re-render when drawer visibility is toggled', async () => {
+  test('does not commit another render when drawer visibility is toggled', async () => {
     const promise = store.dispatch(fetchNotifications());
 
     mockAxios.mockResponse({
@@ -173,18 +172,19 @@ describe('Notifications', () => {
     });
 
     await promise;
+    const onRender = jest.fn();
 
     render(
       <Provider store={store}>
-        <Notifications />
+        <Profiler id="notifications" onRender={onRender}>
+          <Notifications />
+        </Profiler>
       </Provider>
     );
 
-    expect(screen.getByText('New course available')).toBeInTheDocument();
-
+    fireEvent.click(screen.getByText(/your notifications/i));
     fireEvent.click(screen.getByText(/your notifications/i));
 
-    fireEvent.click(screen.getByText(/your notifications/i));
-    expect(screen.getByText('New course available')).toBeInTheDocument();
+    expect(onRender).toHaveBeenCalledTimes(1);
   });
 });

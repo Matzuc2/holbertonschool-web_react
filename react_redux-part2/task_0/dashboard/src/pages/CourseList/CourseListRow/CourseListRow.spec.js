@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import CourseListRow from './CourseListRow';
 
 test('it should display 1 "th" element with colspan=2 when isHeader is true and textSecondCell is null', () => {
@@ -43,4 +43,24 @@ test('it should render 2 "td" elements inside a "tr" element when isHeader is fa
 
   expect(trElement).toBeInTheDocument();
   expect(tdElements).toHaveLength(2);
+});
+
+test('checkbox changes call onChangeRow with the course id and checked state', () => {
+  const onChangeRow = jest.fn();
+  render(
+    <table>
+      <tbody>
+        <CourseListRow
+          id="course-1"
+          textFirstCell="ES6"
+          textSecondCell="60"
+          onChangeRow={onChangeRow}
+        />
+      </tbody>
+    </table>
+  );
+  const checkbox = screen.getByRole('checkbox', { name: 'ES6' });
+
+  fireEvent.click(checkbox);
+  expect(onChangeRow).toHaveBeenCalledWith('course-1', true);
 });

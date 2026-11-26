@@ -1,15 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import Footer from './Footer';
-import { getCurrentYear, getFooterCopy } from '../../utils/utils';
+import { renderWithProviders } from '../../tests/testUtils';
 
 test('It should render footer with copyright text', () => {
-  const defaultUser = {
-    email: '',
-    password: '',
-    isLoggedIn: false
-  };
-
-  render(<Footer user={defaultUser} />)
+  renderWithProviders(<Footer />);
 
   const footerParagraph = screen.getByText(/copyright/i);
 
@@ -18,26 +12,21 @@ test('It should render footer with copyright text', () => {
 });
 
 test('Contact us link is not displayed when user is logged out', () => {
-  const loggedOutUser = {
-    email: '',
-    password: '',
-    isLoggedIn: false
-  };
-
-  render(<Footer user={loggedOutUser} />);
+  renderWithProviders(<Footer />);
 
   const contactLink = screen.queryByText(/contact us/i);
   expect(contactLink).not.toBeInTheDocument();
 });
 
 test('Contact us link is displayed when user is logged in', () => {
-  const loggedInUser = {
-    email: 'test@test.com',
-    password: 'password123',
-    isLoggedIn: true
-  };
-
-  render(<Footer user={loggedInUser} />);
+  renderWithProviders(<Footer />, {
+    preloadedState: {
+      auth: {
+        user: { email: 'test@test.com', password: 'password123' },
+        isLoggedIn: true,
+      },
+    },
+  });
 
   const contactLink = screen.getByText(/contact us/i);
   expect(contactLink).toBeInTheDocument();

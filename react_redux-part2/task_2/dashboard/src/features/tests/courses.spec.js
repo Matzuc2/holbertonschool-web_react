@@ -35,7 +35,9 @@ describe('coursesSlice', () => {
     expect(mockAxios.get).toHaveBeenCalledWith(
       'http://localhost:5173/courses.json'
     )
-    expect(store.getState().courses.courses).toEqual(courses)
+    expect(store.getState().courses.courses).toEqual(
+      courses.map((course) => ({ ...course, isSelected: false }))
+    )
   })
 
   test('clears courses when logout is dispatched', () => {

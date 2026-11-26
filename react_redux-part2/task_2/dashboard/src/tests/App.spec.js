@@ -1,6 +1,7 @@
-import { render, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import mockAxios from 'jest-mock-axios';
+import { renderWithProviders } from './testUtils';
 
 afterEach(() => {
   mockAxios.reset();
@@ -27,7 +28,7 @@ const mockCoursesResponse = {
 };
 
 test('The App component renders without crashing', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -37,7 +38,7 @@ test('The App component renders without crashing', async () => {
 });
 
 test('The App component renders Login by default (user not logged in)', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -53,7 +54,7 @@ test('The App component renders Login by default (user not logged in)', async ()
 });
 
 test('it should display "News from the School" title and paragraph by default', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -66,10 +67,8 @@ test('it should display "News from the School" title and paragraph by default', 
   });
 });
 
-test('clicking on a notification item removes it from the list and logs the message', async () => {
-  const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-
-  const { container } = render(<App />);
+test('clicking on a notification item removes it from the list', async () => {
+  const { container } = renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -84,17 +83,13 @@ test('clicking on a notification item removes it from the list and logs the mess
   if (notificationItems.length > 0) {
     fireEvent.click(notificationItems[0]);
 
-    expect(consoleSpy).toHaveBeenCalledWith(expect.stringMatching(/Notification \d+ has been marked as read/));
-
     const updatedNotificationItems = container.querySelectorAll('[data-notification-type]');
     expect(updatedNotificationItems.length).toBe(initialCount - 1);
   }
-
-  consoleSpy.mockRestore();
 });
 
-test('handleDisplayDrawer sets displayDrawer to true', async () => {
-  render(<App />);
+test('opening the notification drawer adds its visible class', async () => {
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -102,19 +97,17 @@ test('handleDisplayDrawer sets displayDrawer to true', async () => {
     expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
   });
 
-  const closeButton = screen.getByRole('button', { name: /close/i });
-  fireEvent.click(closeButton);
+  const drawer = screen.getByText(/here is the list of notifications/i).parentElement;
+  const initialClassName = drawer.className;
+  fireEvent.click(screen.getByText(/your notifications/i));
+  expect(drawer.className).not.toBe(initialClassName);
 
-  expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
-
-  const notificationTitle = screen.getByText(/your notifications/i);
-  fireEvent.click(notificationTitle);
-
-  expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /close/i }));
+  expect(drawer.className).toBe(initialClassName);
 });
 
-test('handleHideDrawer sets displayDrawer to false', async () => {
-  render(<App />);
+test('closing the notification drawer removes its visible class', async () => {
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -122,15 +115,18 @@ test('handleHideDrawer sets displayDrawer to false', async () => {
     expect(screen.getByText(/here is the list of notifications/i)).toBeInTheDocument();
   });
 
-  const closeButton = screen.getByRole('button', { name: /close/i });
-  fireEvent.click(closeButton);
+  const drawer = screen.getByText(/here is the list of notifications/i).parentElement;
+  const initialClassName = drawer.className;
+  fireEvent.click(screen.getByText(/your notifications/i));
+  expect(drawer.className).not.toBe(initialClassName);
 
-  expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /close/i }));
+  expect(drawer.className).toBe(initialClassName);
   expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
 });
 
 test('logIn function updates user state with email, password, and isLoggedIn true', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -161,7 +157,7 @@ test('logIn function updates user state with email, password, and isLoggedIn tru
 });
 
 test('logOut function resets user state to isLoggedIn false with empty email and password', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 
@@ -194,7 +190,7 @@ test('logOut function resets user state to isLoggedIn false with empty email and
 });
 
 test('verify notifications data is fetched when App component loads initially', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   expect(mockAxios.get).toHaveBeenCalledWith('http://localhost:5173/notifications.json');
 
@@ -207,7 +203,7 @@ test('verify notifications data is fetched when App component loads initially', 
 });
 
 test('verify courses data is fetched when user state changes to logged in', async () => {
-  render(<App />);
+  renderWithProviders(<App />);
 
   mockAxios.mockResponse(mockNotificationsResponse);
 

@@ -28,16 +28,15 @@ const styles = StyleSheet.create({
 
 function CourseList() {
   const {courses} = useSelector((state)=> state.courses)
-  const dispacth = useDispatch()
+  const dispatch = useDispatch()
 
   function onChangeRow (id, checked){
-    console.log("im invoked !")
     if(checked === true){
-      dispacth(selectCourse(id))
+      dispatch(selectCourse(id))
     }
     else{
       if (checked === false){
-        dispacth(unSelectCourse(id))
+        dispatch(unSelectCourse(id))
       }
     }
   }
@@ -63,10 +62,10 @@ function CourseList() {
                 courses.map(course => (
                   <CourseListRow 
                     key={course.id}
-                    id={course.id} 
+                    id={String(course.id)}
                     textFirstCell={course.name} 
                     textSecondCell={course.credit}
-                    changeRow={onChangeRow}
+                    onChangeRow={onChangeRow}
                     isSelected={course.isSelected || false}
                   />
                 ))

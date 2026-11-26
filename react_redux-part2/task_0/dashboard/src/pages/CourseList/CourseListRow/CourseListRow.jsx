@@ -10,9 +10,12 @@ const styles = StyleSheet.create({
 });
 
 export default function CourseListRow({
+  id,
   isHeader = false,
   textFirstCell = '',
-  textSecondCell = null
+  textSecondCell = null,
+  onChangeRow = () => {},
+  isSelected = false,
 }) {
   const rowStyle = isHeader ? styles.headerRow : styles.row;
 
@@ -24,7 +27,16 @@ export default function CourseListRow({
       </tr>
     ) : (
       <tr className={css(rowStyle)}>
-        <td>{textFirstCell}</td>
+        <td>
+          <label>
+            <input
+              type="checkbox"
+              checked={isSelected}
+              onChange={(event) => onChangeRow(id, event.target.checked)}
+            />
+            {textFirstCell}
+          </label>
+        </td>
         <td>{textSecondCell}</td>
       </tr>
     )
